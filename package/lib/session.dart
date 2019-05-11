@@ -23,8 +23,8 @@ class Config {
 
   final String code;
   final String data;
-  final String msg;
   final String list;
+  final String message;
 
   final String validCode;
 
@@ -35,8 +35,8 @@ class Config {
       this.receiveTimeout = 10,
       this.code = 'code',
       this.data = 'data',
-      this.msg = 'message',
       this.list = 'data/list',
+      this.message = 'message',
       this.validCode = '0'});
 }
 
@@ -144,18 +144,18 @@ class Session {
         onReceiveProgress: onReceiveProgress);
     Result result;
     if (response.data is Map) {
-      Map body = response.data;
-      var code = _getMap(body, config.code);
-      var data = _getMap(body, config.data);
-      var list = _getMap(body, config.list);
-      var msg = _getMap(body, config.msg);
+      Map body = response.data ?? {};
+      var code = _getMap(body, config.code) ?? '';
+      var data = _getMap(body, config.data) ?? {};
+      var list = _getMap(body, config.list) ?? [];
+      var message = _getMap(body, config.message) ?? '';
       result = Result(
           response: response,
           body: body,
           code: code,
-          data: (data is Map) ? data : {},
-          list: (list is List) ? list : [],
-          message: msg,
+          data: data,
+          list: list,
+          message: message,
           valid: code == config.validCode);
     } else {
       result = response.data;

@@ -1,14 +1,44 @@
+[![Pub](https://img.shields.io/pub/v/session.svg)](https://pub.dartlang.org/packages/session)
+[![support](https://img.shields.io/badge/platform-flutter%7Cdart%20vm-ff69b4.svg)](https://github.com/OctMon/session)
+
 # session
 
 Network request result
 
+json to dart
+https://javiercbk.github.io/json_to_dart/
+
 ## Getting Started
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
+### Add dependency
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+```yaml
+dependencies:
+  session: ^0.0.3  #latest version
+```
+
+### Example
+
+```dart
+import 'package:session/session.dart';
+
+Session session = Session(
+  config: Config(
+    baseUrl: 'https://api.tuchong.com/',
+    // proxy: 'PROXY localhost:8888',
+    connectTimeout: 5,
+    receiveTimeout: 5,
+    code: 'result',
+    list: 'feedList',
+    validCode: 'SUCCESS',
+  ),
+);
+
+void example() async {
+  Result result = await session.request('feed-app', data: {'page': _counter});
+  if (result.valid) {
+    result.fillList(result.list.map((json) => Model.fromJson(json)).toList());
+    print(result.models.length);
+  }
+}
+```
