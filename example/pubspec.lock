@@ -96,9 +96,9 @@ packages:
     source: hosted
     version: "2.0.2"
   session:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
-      path: ".."
+      path: "../package"
       relative: true
     source: path
     version: "0.0.1"

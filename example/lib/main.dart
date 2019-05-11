@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 
 import 'package:session/session.dart';
 
+import 'model.dart';
+
 void main() => runApp(MyApp());
 
 Session session = Session(
   config: Config(
-    baseUrl: 'https://api.tuchong.com/feed-app?page=1',
+    baseUrl: 'https://api.tuchong.com/',
     // proxy: 'PROXY localhost:8888',
     connectTimeout: 5,
     receiveTimeout: 5,
     code: 'result',
-    list: 'feedList/images',
+    list: 'feedList',
     validCode: 'SUCCESS',
   ),
 );
@@ -61,8 +63,6 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() async {
-    Result result = await session.get('path');
-    print(result.toString());
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -71,6 +71,11 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+    Result result = await session.request('feed-app', data: {'page': _counter});
+    if (result.valid) {
+      result.fillList(result.list.map((json) => Model.fromJson(json)).toList());
+      print(result.models.length);
+    }
   }
 
   @override

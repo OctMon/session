@@ -47,7 +47,7 @@ class Result {
   final String code;
   final String message;
   final Map data;
-  final List<dynamic> list;
+  final List list;
   final bool valid;
   dynamic _model;
   List _models;
@@ -75,7 +75,7 @@ class Result {
     return _model;
   }
 
-  dynamic get models {
+  List get models {
     return _models;
   }
 }
@@ -161,13 +161,6 @@ class Session {
       result = response.data;
     }
     return result;
-  }
-
-  Future<Result> get(
-    String path, {
-    data,
-  }) async {
-    return request(path, data: data, options: Options(method: 'get'));
   }
 
   Future<Result> post(
