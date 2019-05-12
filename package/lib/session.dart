@@ -160,7 +160,7 @@ class Session {
       result = Result(
           response: response,
           body: body,
-          code: code,
+          code: code.toString(),
           data: data,
           list: list,
           message: message,
