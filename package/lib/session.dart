@@ -153,14 +153,22 @@ class Session {
       body = json.decode(response.data);
     }
     if (body is Map) {
-      var code = _getMap(body, config.code) ?? '';
-      var data = _getMap(body, config.data) ?? {};
-      var list = _getMap(body, config.list) ?? [];
-      var message = _getMap(body, config.message) ?? '';
+      var code = '';
+      var data = {};
+      var list = [];
+      var message = '';
+      try {
+        code = _getMap(body, config.code).toString();
+        data = _getMap(body, config.data);
+        list = _getMap(body, config.list);
+        message = _getMap(body, config.message);
+      } catch (e) {
+        print(e);
+      }
       result = Result(
           response: response,
           body: body,
-          code: code.toString(),
+          code: code,
           data: data,
           list: list,
           message: message,
