@@ -1,3 +1,7 @@
+## 0.1.2
+
+* add try catch.
+
 ## 0.1.1
 
 * code convert string.
