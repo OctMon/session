@@ -1,5 +1,7 @@
 library session;
 
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 
 class Config {
@@ -144,8 +146,13 @@ class Session {
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress);
     Result result;
+    Map body;
     if (response.data is Map) {
-      Map body = response.data ?? {};
+      body = response.data ?? {};
+    } else if (response.data is String) {
+      body = json.decode(response.data);
+    }
+    if (body is Map) {
       var code = _getMap(body, config.code) ?? '';
       var data = _getMap(body, config.data) ?? {};
       var list = _getMap(body, config.list) ?? [];
