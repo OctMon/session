@@ -1,3 +1,7 @@
+## 0.1.0
+
+* add onResult.
+
 ## 0.0.3
 
 * bugfix.
