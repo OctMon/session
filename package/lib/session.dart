@@ -83,8 +83,9 @@ class Result {
 class Session {
   final Config config;
   final InterceptorSendCallback onRequest;
+  final void Function(Result result) onResult;
 
-  Session({this.config, this.onRequest});
+  Session({this.config, this.onRequest, this.onResult});
 
   Future<Result> request(
     String path, {
@@ -159,6 +160,9 @@ class Session {
           valid: code == config.validCode);
     } else {
       result = response.data;
+    }
+    if (onResult != null) {
+      onResult(result);
     }
     return result;
   }
