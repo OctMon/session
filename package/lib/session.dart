@@ -158,10 +158,22 @@ class Session {
       var list = [];
       var message = '';
       try {
-        code = _getMap(body, config.code).toString();
-        data = _getMap(body, config.data);
-        list = _getMap(body, config.list);
-        message = _getMap(body, config.message);
+        code = _getMap(body, config.code).toString() ?? '';
+      } catch (e) {
+        print(e);
+      }
+      try {
+        data = _getMap(body, config.data) ?? {};
+      } catch (e) {
+        print(e);
+      }
+      try {
+        list = _getMap(body, config.list) ?? [];
+      } catch (e) {
+        print(e);
+      }
+      try {
+        message = _getMap(body, config.message) ?? '';
       } catch (e) {
         print(e);
       }
