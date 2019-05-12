@@ -1,3 +1,7 @@
+## 0.1.1
+
+* code convert string.
+
 ## 0.1.0
 
 * add onResult.
