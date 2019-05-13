@@ -1,3 +1,7 @@
+## 0.1.3
+
+* add Map.
+
 ## 0.1.2
 
 * add try catch.
