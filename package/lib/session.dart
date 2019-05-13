@@ -91,7 +91,7 @@ class Session {
 
   Future<Result> request(
     String path, {
-    data,
+    Map data,
     Map<String, dynamic> queryParameters,
     CancelToken cancelToken,
     Options options,
@@ -196,7 +196,7 @@ class Session {
 
   Future<Result> post(
     String path, {
-    data,
+    Map data,
   }) async {
     return request(path, data: data, options: Options(method: 'post'));
   }
