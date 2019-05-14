@@ -73,6 +73,26 @@ class Result {
     return this;
   }
 
+  Result fillModel(
+      {dynamic Function(Map json) onModel,
+      dynamic Function(Map json) onModels}) {
+    try {
+      if (onModel != null) {
+        this._model = onModel(data);
+      }
+    } catch (e) {
+      print(e);
+    }
+    try {
+      if (onModels != null && list.length > 0) {
+        this._models = list.map((v) => onModels(v)).toList();
+      }
+    } catch (e) {
+      print(e);
+    }
+    return this;
+  }
+
   dynamic get model {
     return _model;
   }
