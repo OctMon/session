@@ -1,3 +1,7 @@
+## 0.2.0
+
+* add fillModel.
+
 ## 0.1.3
 
 * add Map.
