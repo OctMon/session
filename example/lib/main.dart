@@ -74,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Result result = await session.request('feed-app', data: {'page': _counter});
     if (result.valid) {
       // result.fillList(result.list.map((json) => Model.fromJson(json)).toList());
-      result.fillModel(onModels: (json) => Model.fromJson(json));
+      result.fillModels((json) => Model.fromJson(json));
       print(result.models.length);
     }
   }
