@@ -100,7 +100,7 @@ class Result {
   }
 
   List get models {
-    return _models;
+    return _models ?? [];
   }
 }
 
