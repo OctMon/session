@@ -1,3 +1,7 @@
+## 0.2.2
+
+* set models default value
+
 ## 0.2.1
 
 * add fillModel<T>.
