@@ -100,6 +100,10 @@ class Result {
   List get models {
     return _models;
   }
+
+  bool validWith(String code) {
+    return this.code == code;
+  }
 }
 
 class Session {
