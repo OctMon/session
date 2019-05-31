@@ -1,3 +1,16 @@
+## 0.2.3
+
+* revert "set models default value"
+
+## 0.2.2
+
+* set dio: ^2.1.5
+
+## 0.2.1
+
+* add fillModel<T>.
+* add fillModels<T>.
+
 ## 0.2.0
 
 * add fillModel.

@@ -73,9 +73,7 @@ class Result {
     return this;
   }
 
-  Result fillModel(
-      {dynamic Function(Map json) onModel,
-      dynamic Function(Map json) onModels}) {
+  Result fillModel<T>(T Function(Map json) onModel) {
     try {
       if (onModel != null) {
         this._model = onModel(data);
@@ -83,6 +81,10 @@ class Result {
     } catch (e) {
       print(e);
     }
+    return this;
+  }
+
+  Result fillModels<T>(T Function(Map json) onModels) {
     try {
       if (onModels != null && list.length > 0) {
         this._models = list.map((v) => onModels(v)).toList();
