@@ -1,3 +1,7 @@
+## 0.2.4
+
+* add validWith
+
 ## 0.2.3
 
 * revert "set models default value"
