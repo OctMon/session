@@ -30,6 +30,27 @@ class Config {
 
   final String validCode;
 
+  /// It occurs when timeout
+  /// If you set null to read the error returned by dio
+  /// otherwise read the user-defined error message
+  final String errorTimeout;
+
+  /// When the server response, but with a incorrect status, such as 404, 503...
+  /// If you set null to read the error returned by dio
+  /// otherwise read the user-defined error message
+  final String errorResponse;
+
+  /// When the request is cancelled, dio will throw a error with this type.
+  /// If you set null to read the error returned by dio
+  /// otherwise read the user-defined error message
+  final String errorCancel;
+
+  /// Default error type, Some other Error. In this case, you can
+  /// read the DioError.error if it is not null.
+  /// If you set null to read the error returned by dio
+  /// otherwise read the user-defined error message
+  final String errorOther;
+
   Config(
       {this.baseUrl,
       this.proxy = '',
@@ -39,7 +60,26 @@ class Config {
       this.data = 'data',
       this.list = 'data/list',
       this.message = 'message',
-      this.validCode = '0'});
+      this.validCode = '0',
+      this.errorTimeout = '网络请求超时',
+      this.errorResponse = '服务器错误，请稍后重试',
+      this.errorCancel = '请求被取消了',
+      this.errorOther = '网络请求超时'});
+}
+
+enum ErrorType {
+  /// It occurs when timeout.
+  timeout,
+
+  /// When the server response, but with a incorrect status, such as 404, 503...
+  response,
+
+  /// When the request is cancelled, dio will throw a error with this type.
+  cancel,
+
+  /// Default error type, Some other Error. In this case, you can
+  /// read the DioError.error if it is not null.
+  other,
 }
 
 /// A Result.
@@ -51,6 +91,7 @@ class Result {
   final Map data;
   final List list;
   final bool valid;
+  final ErrorType error;
   dynamic _model;
   List _models;
 
@@ -61,6 +102,7 @@ class Result {
       this.message = '',
       this.data,
       this.list,
+      this.error,
       this.valid = false});
 
   Result fill(model) {
@@ -135,18 +177,39 @@ class Session {
         InterceptorsWrapper(
           onRequest: onRequest,
           onError: (DioError error) {
+            ErrorType errorType = ErrorType.other;
             String message = error.message;
             switch (error.type) {
               case DioErrorType.DEFAULT:
-                message = '网络未连接';
+                if (config.errorOther != null) {
+                  message = config.errorOther;
+                }
+                errorType = ErrorType.other;
                 break;
               case DioErrorType.RESPONSE:
-                message = '服务器错误，请稍后重试';
+                if (config.errorResponse != null) {
+                  message = config.errorResponse;
+                }
+                errorType = ErrorType.response;
+                break;
+              case DioErrorType.CANCEL:
+                if (config.errorCancel != null) {
+                  message = config.errorCancel;
+                }
+                errorType = ErrorType.cancel;
                 break;
               default:
-                message = '网络请求超时';
+                if (config.errorTimeout != null) {
+                  message = config.errorTimeout;
+                }
+                errorType = ErrorType.timeout;
             }
-            return Result(body: {}, data: {}, list: [], message: message);
+            return Result(
+                body: {},
+                data: {},
+                list: [],
+                message: message,
+                error: errorType);
           },
         ),
       )

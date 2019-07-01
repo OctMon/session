@@ -76,6 +76,9 @@ class _MyHomePageState extends State<MyHomePage> {
       // result.fillList(result.list.map((json) => Model.fromJson(json)).toList());
       result.fillModels((json) => Model.fromJson(json));
       print(result.models.length);
+    } else {
+      print(result.error);
+      print(result.message);
     }
   }
 
