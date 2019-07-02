@@ -239,7 +239,11 @@ class Session {
     if (response.data is Map) {
       body = response.data ?? {};
     } else if (response.data is String) {
-      body = json.decode(response.data);
+      try {
+        body = json.decode(response.data);
+      } catch (e) {
+        print(e);
+      }
     }
     if (body is Map) {
       var code = '';
@@ -275,7 +279,12 @@ class Session {
           message: message,
           valid: code == config.validCode);
     } else {
-      result = response.data;
+      result = Result(
+          body: {},
+          data: {},
+          list: [],
+          message: config.errorResponse,
+          error: ErrorType.response);
     }
     if (onResult != null) {
       onResult(result);
