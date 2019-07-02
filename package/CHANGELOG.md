@@ -1,14 +1,19 @@
+## 0.3.0
+
+* bugfix.
+* set dio: ^2.1.8.
+
 ## 0.2.4
 
-* add validWith
+* add validWith.
 
 ## 0.2.3
 
-* revert "set models default value"
+* revert "set models default value".
 
 ## 0.2.2
 
-* set dio: ^2.1.5
+* set dio: ^2.1.5.
 
 ## 0.2.1
 
