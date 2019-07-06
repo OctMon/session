@@ -1,3 +1,9 @@
+## 0.3.1
+
+* add merge.
+* add error.response.
+* set dio: ^2.1.10.
+
 ## 0.3.0
 
 * bugfix.
