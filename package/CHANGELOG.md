@@ -1,3 +1,9 @@
+## 0.3.2
+
+* add get.
+* return result
+* set dio: ^2.1.13.
+
 ## 0.3.1
 
 * add merge.
