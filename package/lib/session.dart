@@ -51,20 +51,19 @@ class Config {
   /// otherwise read the user-defined error message
   final String errorOther;
 
-  Config(
-      {this.baseUrl,
-      this.proxy = '',
-      this.connectTimeout = 10,
-      this.receiveTimeout = 10,
-      this.code = 'code',
-      this.data = 'data',
-      this.list = 'data/list',
-      this.message = 'message',
-      this.validCode = '0',
-      this.errorTimeout = '网络请求超时',
-      this.errorResponse = '服务器错误，请稍后重试',
-      this.errorCancel = '请求被取消了',
-      this.errorOther = '网络请求超时'});
+  Config({this.baseUrl,
+    this.proxy = '',
+    this.connectTimeout = 10,
+    this.receiveTimeout = 10,
+    this.code = 'code',
+    this.data = 'data',
+    this.list = 'data/list',
+    this.message = 'message',
+    this.validCode = '0',
+    this.errorTimeout = '网络请求超时',
+    this.errorResponse = '服务器错误，请稍后重试',
+    this.errorCancel = '请求被取消了',
+    this.errorOther = '网络请求超时'});
 }
 
 enum ErrorType {
@@ -95,27 +94,30 @@ class Result {
   dynamic _model;
   List _models;
 
-  Result(
-      {this.response,
-      this.body,
-      this.code = '',
-      this.message = '',
-      this.data,
-      this.list,
-      this.error,
-      this.valid = false});
+  Result({this.response,
+    this.body,
+    this.code = '',
+    this.message = '',
+    this.data,
+    this.list,
+    this.error,
+    this.valid = false});
 
   merge(Result other) {
     if (other == null) return this;
-    return Result(
-        response: other.response ?? response,
-        body: other.body ?? body,
-        code: other.code ?? code,
-        message: other.message ?? message,
-        data: other.data ?? data,
-        list: other.list ?? list,
-        error: other.error ?? error,
-        valid: other.valid ?? valid);
+    Result result = Result(
+      response: other.response ?? response,
+      body: other.body ?? body,
+      code: other.code.isNotEmpty ? other.code : code,
+      message: other.message.isNotEmpty ? other.message : message,
+      data: other.data ?? data,
+      list: other.list ?? list,
+      error: other.error ?? error,
+      valid: other.valid ?? valid,
+    );
+    result.fill(_model);
+    result.fillList(_models);
+    return result;
   }
 
   Result fill(model) {
@@ -166,12 +168,11 @@ class Result {
 class Session {
   final Config config;
   final InterceptorSendCallback onRequest;
-  final void Function(Result result) onResult;
+  final Result Function(Result result) onResult;
 
   Session({this.config, this.onRequest, this.onResult});
 
-  Future<Result> request(
-    String path, {
+  Future<Result> request(String path, {
     Map data,
     Map<String, dynamic> queryParameters,
     CancelToken cancelToken,
@@ -302,13 +303,21 @@ class Session {
           error: ErrorType.response);
     }
     if (onResult != null) {
-      onResult(result);
+      return onResult(result);
     }
     return result;
   }
 
-  Future<Result> post(
-    String path, {
+  Future<Result> get(String path, {
+    Map data,
+    Map<String, dynamic> queryParameters,
+  }) async {
+    return request(path, data: data,
+        queryParameters: queryParameters,
+        options: Options(method: 'get'));
+  }
+
+  Future<Result> post(String path, {
     Map data,
   }) async {
     return request(path, data: data, options: Options(method: 'post'));

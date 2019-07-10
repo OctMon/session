@@ -14,8 +14,10 @@ Session session = Session(
     receiveTimeout: 5,
     code: 'result',
     list: 'feedList',
-    validCode: 'SUCCESS',
   ),
+  onResult: (result) {
+    return result.merge(Result(message: '永远都是成功', valid: result.code == 'SUCCESS'));
+  }
 );
 
 class MyApp extends StatelessWidget {
@@ -78,8 +80,12 @@ class _MyHomePageState extends State<MyHomePage> {
       print(result.models.length);
     } else {
       print(result.error);
-      print(result.message);
     }
+    print('=====');
+    print(result.code);
+    print(result.message);
+    print(result.list);
+    print('=====');
   }
 
   @override
@@ -104,9 +110,9 @@ class _MyHomePageState extends State<MyHomePage> {
           // arranges them vertically. By default, it sizes itself to fit its
           // children horizontally, and tries to be as tall as its parent.
           //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+          // Invoke 'debug painting' (press 'p' in the console, choose the
+          // 'Toggle Debug Paint' action from the Flutter Inspector in Android
+          // Studio, or the 'Toggle Debug Paint' command in Visual Studio Code)
           // to see the wireframe for each widget.
           //
           // Column has various properties to control how it sizes itself and
