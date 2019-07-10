@@ -51,19 +51,20 @@ class Config {
   /// otherwise read the user-defined error message
   final String errorOther;
 
-  Config({this.baseUrl,
-    this.proxy = '',
-    this.connectTimeout = 10,
-    this.receiveTimeout = 10,
-    this.code = 'code',
-    this.data = 'data',
-    this.list = 'data/list',
-    this.message = 'message',
-    this.validCode = '0',
-    this.errorTimeout = '网络请求超时',
-    this.errorResponse = '服务器错误，请稍后重试',
-    this.errorCancel = '请求被取消了',
-    this.errorOther = '网络请求超时'});
+  Config(
+      {this.baseUrl,
+      this.proxy = '',
+      this.connectTimeout = 10,
+      this.receiveTimeout = 10,
+      this.code = 'code',
+      this.data = 'data',
+      this.list = 'data/list',
+      this.message = 'message',
+      this.validCode = '0',
+      this.errorTimeout = '网络请求超时',
+      this.errorResponse = '服务器错误，请稍后重试',
+      this.errorCancel = '请求被取消了',
+      this.errorOther = '网络请求超时'});
 }
 
 enum ErrorType {
@@ -94,14 +95,15 @@ class Result {
   dynamic _model;
   List _models;
 
-  Result({this.response,
-    this.body,
-    this.code = '',
-    this.message = '',
-    this.data,
-    this.list,
-    this.error,
-    this.valid = false});
+  Result(
+      {this.response,
+      this.body,
+      this.code = '',
+      this.message = '',
+      this.data,
+      this.list,
+      this.error,
+      this.valid = false});
 
   merge(Result other) {
     if (other == null) return this;
@@ -168,11 +170,12 @@ class Result {
 class Session {
   final Config config;
   final InterceptorSendCallback onRequest;
-  final Result Function(Result result) onResult;
+  final dynamic Function(Result result) onResult;
 
   Session({this.config, this.onRequest, this.onResult});
 
-  Future<Result> request(String path, {
+  Future<Result> request(
+    String path, {
     Map data,
     Map<String, dynamic> queryParameters,
     CancelToken cancelToken,
@@ -308,16 +311,19 @@ class Session {
     return result;
   }
 
-  Future<Result> get(String path, {
+  Future<Result> get(
+    String path, {
     Map data,
     Map<String, dynamic> queryParameters,
   }) async {
-    return request(path, data: data,
+    return request(path,
+        data: data,
         queryParameters: queryParameters,
         options: Options(method: 'get'));
   }
 
-  Future<Result> post(String path, {
+  Future<Result> post(
+    String path, {
     Map data,
   }) async {
     return request(path, data: data, options: Options(method: 'post'));
