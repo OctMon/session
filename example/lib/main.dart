@@ -82,6 +82,8 @@ class _MyHomePageState extends State<MyHomePage> {
       print(result.error);
     }
     print('=====');
+    print(result.response.statusCode);
+    print(result.response.data);
     print(result.code);
     print(result.message);
     print(result.list);

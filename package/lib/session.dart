@@ -222,8 +222,11 @@ class Session {
                 errorType = ErrorType.timeout;
             }
             return Result(
-                response: error.response,
-                body: {},
+                response: error.response ??
+                    Response(
+                        request: error.request, extra: error.request.extra),
+                body: (error.response?.data is Map) ? error.response?.data : {},
+                code: error.response?.statusCode.toString() ?? '',
                 data: {},
                 list: [],
                 message: message,
@@ -296,6 +299,8 @@ class Session {
           list: list,
           message: message,
           valid: code == config.validCode);
+    } else if (response.data is Result) {
+      result = response.data;
     } else {
       result = Result(
           response: response,
