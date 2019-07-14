@@ -64,7 +64,7 @@ class Config {
       this.errorTimeout = '网络请求超时',
       this.errorResponse = '服务器错误，请稍后重试',
       this.errorCancel = '请求被取消了',
-      this.errorOther = '网络请求超时'});
+      this.errorOther = null});
 }
 
 enum ErrorType {
