@@ -14,7 +14,7 @@ https://javiercbk.github.io/json_to_dart/
 
 ```yaml
 dependencies:
-  session: ^0.3.4  #latest version
+  session: ^0.3.5  #latest version
 ```
 
 ### Example

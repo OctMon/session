@@ -1,3 +1,7 @@
+## 0.3.5
+
+* set default errorOther.
+
 ## 0.3.4
 
 * result error.
