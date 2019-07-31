@@ -30,14 +30,35 @@ Session session = Session(
     receiveTimeout: 5,
     code: 'result',
     list: 'feedList',
-    validCode: 'SUCCESS',
   ),
+    onRequest: (options) async {
+      options.headers['token'] = 'token';
+      return options;
+    },
+  onResult: (result) {
+      try {
+        switch (result.code) {
+          case 'tokenExpired':
+          // clearUserInfo();
+            break;
+          default:
+        }
+      } catch (e) {
+        print(e);
+      }
+      // Json to dart beans are provided, and dart files ending in entity are provided to generate dart bean factory for use. 
+//      result
+//        ..fillModel((json) => EntityFactory.generateOBJ<T>(json))
+//        ..fillModels((json) => EntityFactory.generateOBJ<T>(json));
+    return result;
+  },
 );
 
 void example() async {
   Result result = await session.request('feed-app', data: {'page': _counter});
   if (result.valid) {
-    result.fillList(result.list.map((json) => Model.fromJson(json)).toList());
+    // result.fillList(result.list.map((json) => Model.fromJson(json)).toList());
+    result.fillModels((json) => Model.fromJson(json));
     print(result.models.length);
   }
 }
