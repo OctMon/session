@@ -129,7 +129,7 @@ class Result {
   fillModel<T>(T Function(Map json) onModel) {
     try {
       if (onModel != null) {
-        this._model = onModel(data);
+        _model = onModel(data);
       }
     } catch (e) {
       print(e);
@@ -139,7 +139,7 @@ class Result {
   fillModels<T>(T Function(Map json) onModels) {
     try {
       if (onModels != null && list.length > 0) {
-        this._models = list.map((v) => onModels(v)).toList();
+        _models = list.map((v) => onModels(v)).toList();
       }
     } catch (e) {
       print(e);
