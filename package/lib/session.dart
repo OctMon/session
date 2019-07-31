@@ -122,17 +122,11 @@ class Result {
     return result;
   }
 
-  Result fill(model) {
-    this._model = model;
-    return this;
-  }
+  fill(model) => this._model = model;
 
-  Result fillList(models) {
-    this._models = models;
-    return this;
-  }
+  fillList(models) => this._models = models;
 
-  Result fillModel<T>(T Function(Map json) onModel) {
+  fillModel<T>(T Function(Map json) onModel) {
     try {
       if (onModel != null) {
         this._model = onModel(data);
@@ -140,10 +134,9 @@ class Result {
     } catch (e) {
       print(e);
     }
-    return this;
   }
 
-  Result fillModels<T>(T Function(Map json) onModels) {
+  fillModels<T>(T Function(Map json) onModels) {
     try {
       if (onModels != null && list.length > 0) {
         this._models = list.map((v) => onModels(v)).toList();
@@ -151,7 +144,6 @@ class Result {
     } catch (e) {
       print(e);
     }
-    return this;
   }
 
   dynamic get model {
