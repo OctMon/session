@@ -1,6 +1,7 @@
 library session;
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 
@@ -16,6 +17,12 @@ class Config {
   ///
   /// please set proxy = 'PROXY localhost:8888'
   final String proxy;
+
+  /// Sets a callback that will decide whether to accept a secure connection
+  /// with a server certificate that cannot be authenticated by any of our
+  /// trusted root certificates.
+  final bool Function(X509Certificate cert, String host, int port)
+      badCertificateCallback;
 
   /// second
   final int connectTimeout;
@@ -54,6 +61,7 @@ class Config {
   Config(
       {this.baseUrl,
       this.proxy = '',
+      this.badCertificateCallback,
       this.connectTimeout = 10,
       this.receiveTimeout = 10,
       this.code = 'code',
@@ -232,14 +240,18 @@ class Session {
           responseBody: true,
         ),
       );
-    if (config.proxy.isNotEmpty) {
-      (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-          (client) {
+    (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (client) {
+      if (config.proxy.isNotEmpty) {
         client.findProxy = (uri) {
           return config.proxy;
         };
-      };
-    }
+      }
+      if (config.badCertificateCallback != null) {
+        client.badCertificateCallback = config.badCertificateCallback;
+      }
+    };
+
     Response response = await _dio.request(path,
         data: data,
         queryParameters: queryParameters,
