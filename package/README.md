@@ -17,7 +17,7 @@ https://github.com/zhangruiyu/FlutterJsonBeanFactory
 
 ```yaml
 dependencies:
-  session: ^0.3.5  #latest version
+  session: ^0.3.6  #latest version
 ```
 
 ### Example

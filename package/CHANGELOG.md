@@ -1,3 +1,7 @@
+## 0.3.6
+
+* add this.badCertificateCallback.
+
 ## 0.3.5
 
 * set default errorOther.
