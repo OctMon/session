@@ -5,7 +5,22 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
+bool _debugFlag = false;
+
+/// is app run a debug mode.
+bool _isDebug() {
+  /// Assert statements have no effect in production code;
+  /// they’re for development only. Flutter enables asserts in debug mode.
+  assert(() {
+    _debugFlag = true;
+    return _debugFlag;
+  }());
+  return _debugFlag;
+}
+
 class Config {
+  static bool logEnable = _isDebug();
+
   /// Request base url,
   ///
   /// it can contain sub path, like: "https://www.google.com/api/".
@@ -140,7 +155,9 @@ class Result {
         _model = onModel(data);
       }
     } catch (e) {
-      print(e);
+      if (Config.logEnable) {
+        print(e);
+      }
     }
   }
 
@@ -150,7 +167,9 @@ class Result {
         _models = list.map((v) => onModels(v)).toList();
       }
     } catch (e) {
-      print(e);
+      if (Config.logEnable) {
+        print(e);
+      }
     }
   }
 
@@ -189,8 +208,7 @@ class Session {
         receiveTimeout: config.receiveTimeout * 1000);
     final Dio _dio = Dio(
       _options,
-    )
-      ..interceptors.add(
+    )..interceptors.add(
         InterceptorsWrapper(
           onRequest: onRequest,
           onError: (DioError error) {
@@ -233,13 +251,15 @@ class Session {
                 error: errorType);
           },
         ),
-      )
-      ..interceptors.add(
+      );
+    if (Config.logEnable) {
+      _dio.interceptors.add(
         LogInterceptor(
           requestBody: true,
           responseBody: true,
         ),
       );
+    }
     (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (client) {
       if (config.proxy.isNotEmpty) {
@@ -267,7 +287,9 @@ class Session {
       try {
         body = json.decode(response.data);
       } catch (e) {
-        print(e);
+        if (Config.logEnable) {
+          print(e);
+        }
       }
     }
     if (body is Map) {
@@ -278,22 +300,30 @@ class Session {
       try {
         code = _getMap(body, config.code).toString() ?? '';
       } catch (e) {
-        print(e);
+        if (Config.logEnable) {
+          print(e);
+        }
       }
       try {
         data = _getMap(body, config.data) ?? {};
       } catch (e) {
-        print(e);
+        if (Config.logEnable) {
+          print(e);
+        }
       }
       try {
         list = _getMap(body, config.list) ?? [];
       } catch (e) {
-        print(e);
+        if (Config.logEnable) {
+          print(e);
+        }
       }
       try {
         message = _getMap(body, config.message) ?? '';
       } catch (e) {
-        print(e);
+        if (Config.logEnable) {
+          print(e);
+        }
       }
       result = Result(
           response: response,
