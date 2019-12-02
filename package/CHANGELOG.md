@@ -1,3 +1,7 @@
+## 0.3.7
+
+* add logEnable.
+
 ## 0.3.6
 
 * add this.badCertificateCallback.
