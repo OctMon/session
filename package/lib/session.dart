@@ -261,17 +261,23 @@ class Session {
         ),
       );
     }
-    (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-        (client) {
-      if (config.proxy.isNotEmpty) {
-        client.findProxy = (uri) {
-          return config.proxy;
-        };
+    try {
+      (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (client) {
+        if (config.proxy.isNotEmpty) {
+          client.findProxy = (uri) {
+            return config.proxy;
+          };
+        }
+        if (config.badCertificateCallback != null) {
+          client.badCertificateCallback = config.badCertificateCallback;
+        }
+      };
+    } catch (e) {
+      if (Config.logEnable) {
+        print(e);
       }
-      if (config.badCertificateCallback != null) {
-        client.badCertificateCallback = config.badCertificateCallback;
-      }
-    };
+    }
 
     Response response = await _dio.request(path,
         data: data,

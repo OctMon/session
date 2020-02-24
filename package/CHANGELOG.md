@@ -1,3 +1,7 @@
+## 0.4.1
+
+* fix DefaultHttpClientAdapter error.
+
 ## 0.4.0
 
 * support Flutter Web.
