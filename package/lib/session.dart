@@ -212,45 +212,6 @@ class Session {
     )..interceptors.add(
         InterceptorsWrapper(
           onRequest: onRequest,
-          onError: (DioError error) {
-            ErrorType errorType = ErrorType.other;
-            String message = error.message;
-            switch (error.type) {
-              case DioErrorType.DEFAULT:
-                if (config.errorOther != null) {
-                  message = config.errorOther;
-                }
-                errorType = ErrorType.other;
-                break;
-              case DioErrorType.RESPONSE:
-                if (config.errorResponse != null) {
-                  message = config.errorResponse;
-                }
-                errorType = ErrorType.response;
-                break;
-              case DioErrorType.CANCEL:
-                if (config.errorCancel != null) {
-                  message = config.errorCancel;
-                }
-                errorType = ErrorType.cancel;
-                break;
-              default:
-                if (config.errorTimeout != null) {
-                  message = config.errorTimeout;
-                }
-                errorType = ErrorType.timeout;
-            }
-            return Result(
-                response: error.response ??
-                    Response(
-                        request: error.request, extra: error.request.extra),
-                body: (error.response?.data is Map) ? error.response?.data : {},
-                code: error.response?.statusCode.toString() ?? '',
-                data: {},
-                list: [],
-                message: message,
-                error: errorType);
-          },
         ),
       );
     if (Config.logEnable) {
@@ -279,78 +240,125 @@ class Session {
       }
     }
 
-    Response response = await _dio.request(path,
-        data: data,
-        queryParameters: queryParameters,
-        cancelToken: cancelToken,
-        options: options,
-        onSendProgress: onSendProgress,
-        onReceiveProgress: onReceiveProgress);
+    Response response;
     Result result;
-    Map body;
-    if (response.data is Map) {
-      body = response.data ?? {};
-    } else if (response.data is String) {
-      try {
-        body = json.decode(response.data);
-      } catch (e) {
-        if (Config.logEnable) {
-          print(e);
-        }
-      }
-    }
-    if (body is Map) {
-      var code = '';
-      var data = {};
-      var list = [];
-      var message = '';
-      try {
-        code = _getMap(body, config.code).toString() ?? '';
-      } catch (e) {
-        if (Config.logEnable) {
-          print(e);
-        }
-      }
-      try {
-        data = _getMap(body, config.data) ?? {};
-      } catch (e) {
-        if (Config.logEnable) {
-          print(e);
-        }
-      }
-      try {
-        list = _getMap(body, config.list) ?? [];
-      } catch (e) {
-        if (Config.logEnable) {
-          print(e);
-        }
-      }
-      try {
-        message = _getMap(body, config.message) ?? '';
-      } catch (e) {
-        if (Config.logEnable) {
-          print(e);
-        }
-      }
-      result = Result(
-          response: response,
-          body: body,
-          code: code,
+    try {
+      response = await _dio.request(path,
           data: data,
-          list: list,
-          message: message,
-          valid: code == config.validCode);
-    } else if (response.data is Result) {
-      result = response.data;
-    } else {
+          queryParameters: queryParameters,
+          cancelToken: cancelToken,
+          options: options,
+          onSendProgress: onSendProgress,
+          onReceiveProgress: onReceiveProgress);
+    } on DioError catch (error) {
+      ErrorType errorType = ErrorType.other;
+      String message = error.message;
+      switch (error.type) {
+        case DioErrorType.DEFAULT:
+          if (config.errorOther != null) {
+            message = config.errorOther;
+          }
+          errorType = ErrorType.other;
+          break;
+        case DioErrorType.RESPONSE:
+          if (config.errorResponse != null) {
+            message = config.errorResponse;
+          }
+          errorType = ErrorType.response;
+          break;
+        case DioErrorType.CANCEL:
+          if (config.errorCancel != null) {
+            message = config.errorCancel;
+          }
+          errorType = ErrorType.cancel;
+          break;
+        default:
+          if (config.errorTimeout != null) {
+            message = config.errorTimeout;
+          }
+          errorType = ErrorType.timeout;
+      }
       result = Result(
-          response: response,
-          body: {},
+          response: error.response ??
+              Response(request: error.request, extra: error.request.extra),
+          body: (error.response?.data is Map) ? error.response?.data : {},
+          code: error.response?.statusCode.toString() ?? '',
           data: {},
           list: [],
-          message: config.errorResponse,
-          error: ErrorType.response);
+          message: message,
+          error: errorType);
+    } catch (error) {
+      if (Config.logEnable) {
+        print(error);
+      }
     }
+    if (result == null) {
+      Map body;
+      if (response.data is Map) {
+        body = response.data ?? {};
+      } else if (response.data is String) {
+        try {
+          body = json.decode(response.data);
+        } catch (e) {
+          if (Config.logEnable) {
+            print(e);
+          }
+        }
+      }
+      if (body is Map) {
+        var code = '';
+        var data = {};
+        var list = [];
+        var message = '';
+        try {
+          code = _getMap(body, config.code).toString() ?? '';
+        } catch (e) {
+          if (Config.logEnable) {
+            print(e);
+          }
+        }
+        try {
+          data = _getMap(body, config.data) ?? {};
+        } catch (e) {
+          if (Config.logEnable) {
+            print(e);
+          }
+        }
+        try {
+          list = _getMap(body, config.list) ?? [];
+        } catch (e) {
+          if (Config.logEnable) {
+            print(e);
+          }
+        }
+        try {
+          message = _getMap(body, config.message) ?? '';
+        } catch (e) {
+          if (Config.logEnable) {
+            print(e);
+          }
+        }
+        result = Result(
+            response: response,
+            body: body,
+            code: code,
+            data: data,
+            list: list,
+            message: message,
+            valid: code == config.validCode);
+      } else if (response.data is Result) {
+        result = response.data;
+      } else {
+        result = Result(
+            response: response,
+            body: {},
+            data: {},
+            list: [],
+            message: config.errorResponse,
+            error: ErrorType.response);
+      }
+    }
+
     if (onResult != null) {
       return onResult(result);
     }
