@@ -1,3 +1,7 @@
+## 0.5.0
+
+* fix catch error.
+
 ## 0.4.1
 
 * fix DefaultHttpClientAdapter error.

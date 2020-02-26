@@ -1,11 +1,10 @@
 name: session
 description: Network request result
-version: 0.4.1
-author: OctMon <octmon@qq.com>
+version: 0.5.0
 homepage:  https://github.com/OctMon/session
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
-  dio: ^3.0.8 # https://github.com/flutterchina/dio
+  dio: ^3.0.9 # https://github.com/flutterchina/dio
