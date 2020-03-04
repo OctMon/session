@@ -174,6 +174,30 @@ class Result {
     }
   }
 
+  fillMap<T>(T Function(Map json) onMap, {dynamic map}) {
+    try {
+      if (onMap != null) {
+        if (map != null) {
+          if (map is List) {
+            _models = map.map((v) => onMap(v)).toList();
+          } else if (map is Map) {
+            _model = onMap(map);
+          }
+        } else if (list.length > 0) {
+          _models = list.map((v) => onMap(v)).toList();
+        } else if (data?.isNotEmpty == true) {
+          _model = onMap(data);
+        } else {
+          _model = onMap(body);
+        }
+      }
+    } catch (e) {
+      if (Config.logEnable) {
+        print(e);
+      }
+    }
+  }
+
   dynamic get model {
     return _model;
   }

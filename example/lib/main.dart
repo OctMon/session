@@ -3,22 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:session/session.dart';
 
 import 'model.dart';
+import 'data_model.dart';
 
 void main() => runApp(MyApp());
 
 Session session = Session(
-  config: Config(
-    baseUrl: 'https://api.tuchong.com/',
-    // proxy: 'PROXY localhost:8888',
-    connectTimeout: 5,
-    receiveTimeout: 5,
-    code: 'result',
-    list: 'feedList',
-  ),
-  onResult: (result) {
-    return result.merge(Result(message: '永远都是成功', valid: result.code == 'SUCCESS'));
-  }
-);
+    config: Config(
+      baseUrl: 'https://api.tuchong.com/',
+//      proxy: 'PROXY localhost:8888',
+//      badCertificateCallback: (cert, String host, int port) {
+//        return true;
+//      },
+      connectTimeout: 5,
+      receiveTimeout: 5,
+      code: 'result',
+      list: 'feedList',
+    ),
+    onResult: (result) {
+      return result
+          .merge(Result(message: '永远都是成功', valid: result.code == 'SUCCESS'));
+    });
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -75,9 +79,13 @@ class _MyHomePageState extends State<MyHomePage> {
     });
     Result result = await session.request('feed-app', data: {'page': _counter});
     if (result.valid) {
-      // result.fillList(result.list.map((json) => Model.fromJson(json)).toList());
-      result.fillModels((json) => Model.fromJson(json));
+//       result.fillList(result.list.map((json) => Model.fromJson(json)).toList());
+//      result.fillModels((json) => Model.fromJson(json));
+//      result.fillMap((json) => Model.fromJson(json), map: result.list);
+      result.fillMap((json) => DataMode.fromJson(json), map: result.body);
+      result.fillMap((json) => DataMode.fromJson(json));
       print(result.models.length);
+      print(result.model);
     } else {
       print(result.error);
     }
