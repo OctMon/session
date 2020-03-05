@@ -1,3 +1,7 @@
+## 0.5.1
+
+* add fillMap.
+
 ## 0.5.0
 
 * fix catch error.
