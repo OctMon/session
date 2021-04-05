@@ -8,9 +8,6 @@ Network request result
 json to dart
 https://javiercbk.github.io/json_to_dart/
 
-FlutterJsonBeanFactory
-https://github.com/zhangruiyu/FlutterJsonBeanFactory
-
 ## Getting Started
 
 ### Add dependency
