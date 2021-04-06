@@ -22,7 +22,8 @@ Session session = Session(
     onResult: (result) {
       return result
           .merge(Result(message: '永远都是成功', valid: result.code == 'SUCCESS'));
-    });
+    },
+);
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -90,8 +91,8 @@ class _MyHomePageState extends State<MyHomePage> {
       print(result.error);
     }
     print('=====');
-    print(result.response.statusCode);
-    print(result.response.data);
+    print(result.response?.statusCode);
+    print(result.response?.data);
     print(result.code);
     print(result.message);
     print(result.list);

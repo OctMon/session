@@ -278,19 +278,19 @@ class Session {
       ErrorType errorType = ErrorType.other;
       String message = error.message;
       switch (error.type) {
-        case DioErrorType.DEFAULT:
+        case DioErrorType.other:
           if (config.errorOther != null) {
             message = config.errorOther;
           }
           errorType = ErrorType.other;
           break;
-        case DioErrorType.RESPONSE:
+        case DioErrorType.response:
           if (config.errorResponse != null) {
             message = config.errorResponse;
           }
           errorType = ErrorType.response;
           break;
-        case DioErrorType.CANCEL:
+        case DioErrorType.cancel:
           if (config.errorCancel != null) {
             message = config.errorCancel;
           }
@@ -303,8 +303,7 @@ class Session {
           errorType = ErrorType.timeout;
       }
       result = Result(
-          response: error.response ??
-              Response(request: error.request, extra: error.request.extra),
+          response: error.response,
           body: (error.response?.data is Map) ? error.response?.data : {},
           code: error.response?.statusCode.toString() ?? '',
           data: {},
