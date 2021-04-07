@@ -211,10 +211,13 @@ class Result {
   }
 }
 
+typedef SessionInterceptorSendHandler = void Function(RequestOptions options);
+typedef SessionInterceptorSuccessHandler = dynamic Function(Result result);
+
 class Session {
   final Config config;
-  final InterceptorSendCallback onRequest;
-  final dynamic Function(Result result) onResult;
+  final SessionInterceptorSendHandler onRequest;
+  final SessionInterceptorSuccessHandler onResult;
 
   Session({this.config, this.onRequest, this.onResult});
 
@@ -235,7 +238,9 @@ class Session {
       _options,
     )..interceptors.add(
         InterceptorsWrapper(
-          onRequest: onRequest,
+          onRequest: (options, handler) {
+            return handler.next(options);
+          },
         ),
       );
     if (Config.logEnable) {

@@ -1,25 +1,3 @@
-[![Pub](https://img.shields.io/pub/v/session.svg)](https://pub.dartlang.org/packages/session)
-[![support](https://img.shields.io/badge/platform-flutter%7Cdart%20vm-ff69b4.svg)](https://github.com/OctMon/session)
-
-# session
-
-Network request result
-
-json to dart
-https://javiercbk.github.io/json_to_dart/
-
-## Getting Started
-
-### Add dependency
-
-```yaml
-dependencies:
-  session: ^1.0.0  #latest version
-```
-
-### Example
-
-```dart
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -144,14 +122,3 @@ Future<Result> requestAPI(
       data: data, queryParameters: queryParameters, options: options);
   return _onValidResult(result, validResult, context);
 }
-
-void example() async {
-  getApi(path: "ip").then((result) {
-    print("======");
-    print(result.code);
-    print(result.message);
-    print(result.body);
-    print("======");
-  });
-}
-```

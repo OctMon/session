@@ -1,3 +1,4 @@
+import 'package:example/api.dart';
 import 'package:flutter/material.dart';
 
 import 'package:session/session.dart';
@@ -68,6 +69,18 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+
+  @override
+  void initState() {
+    getApi(path: "ip").then((result) {
+      print("======");
+      print(result.code);
+      print(result.message);
+      print(result.body);
+      print("======");
+    });
+    super.initState();
+  }
 
   void _incrementCounter() async {
     setState(() {

@@ -1,3 +1,7 @@
+## 1.0.0
+
+* Upgrade dio: ^4.0.0.
+
 ## 0.5.1
 
 * add fillMap.
