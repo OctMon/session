@@ -3,27 +3,26 @@ import 'package:flutter/material.dart';
 
 import 'package:session/session.dart';
 
-import 'model.dart';
 import 'data_model.dart';
 
 void main() => runApp(MyApp());
 
 Session session = Session(
-    config: Config(
-      baseUrl: 'https://api.tuchong.com/',
+  config: Config(
+    baseUrl: 'https://api.tuchong.com/',
 //      proxy: 'PROXY localhost:8888',
 //      badCertificateCallback: (cert, String host, int port) {
 //        return true;
 //      },
-      connectTimeout: 5,
-      receiveTimeout: 5,
-      code: 'result',
-      list: 'feedList',
-    ),
-    onResult: (result) {
-      return result
-          .merge(Result(message: '永远都是成功', valid: result.code == 'SUCCESS'));
-    },
+    connectTimeout: 5,
+    receiveTimeout: 5,
+    code: 'result',
+    list: 'feedList',
+  ),
+  onResult: (result) {
+    return result
+        .merge(Result(message: '永远都是成功', valid: result.code == 'SUCCESS'));
+  },
 );
 
 class MyApp extends StatelessWidget {
@@ -74,9 +73,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     getApi(path: "ip").then((result) {
       print("======");
+      print(result.response?.statusCode);
       print(result.code);
       print(result.message);
       print(result.body);
+      print(result.valid);
       print("======");
     });
     super.initState();
@@ -93,11 +94,10 @@ class _MyHomePageState extends State<MyHomePage> {
     });
     Result result = await session.request('feed-app', data: {'page': _counter});
     if (result.valid) {
-//       result.fillList(result.list.map((json) => Model.fromJson(json)).toList());
-//      result.fillModels((json) => Model.fromJson(json));
-//      result.fillMap((json) => Model.fromJson(json), map: result.list);
+      // result.fillList(result.list.map((json) => FeedList.fromJson(json)).toList());
+      // result.fillModels((json) => FeedList.fromJson(json));
       result.fillMap((json) => DataMode.fromJson(json), map: result.body);
-      result.fillMap((json) => DataMode.fromJson(json));
+      result.fillMap((json) => FeedList.fromJson(json), map: result.list);
       print(result.models.length);
       print(result.model);
     } else {
@@ -109,6 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
     print(result.code);
     print(result.message);
     print(result.list);
+    print(result.valid);
     print('=====');
   }
 
@@ -151,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.display1,
+              style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),

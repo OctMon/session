@@ -347,7 +347,7 @@ class Site {
   bool hasEverphotoNote;
   bool verified;
   int verifications;
-  List<Verification_list> verificationList;
+  List<VerificationList> verificationList;
   bool isFollowing;
 
   Site({
@@ -370,12 +370,12 @@ class Site {
   static Site fromJson(jsonRes) {
     if (jsonRes == null) return null;
 
-    List<Verification_list> verificationList =
+    List<VerificationList> verificationList =
         jsonRes['verification_list'] is List ? [] : null;
     if (verificationList != null) {
       for (var item in jsonRes['verification_list']) {
         if (item != null) {
-          verificationList.add(Verification_list.fromJson(item));
+          verificationList.add(VerificationList.fromJson(item));
         }
       }
     }
@@ -420,18 +420,18 @@ class Site {
   }
 }
 
-class Verification_list {
+class VerificationList {
   int verificationType;
   String verificationReason;
 
-  Verification_list({
+  VerificationList({
     this.verificationType,
     this.verificationReason,
   });
 
-  static Verification_list fromJson(jsonRes) => jsonRes == null
+  static VerificationList fromJson(jsonRes) => jsonRes == null
       ? null
-      : Verification_list(
+      : VerificationList(
           verificationType: jsonRes['verification_type'],
           verificationReason: jsonRes['verification_reason'],
         );
