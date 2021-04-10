@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:example/api.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +21,9 @@ Session session = Session(
     code: 'result',
     list: 'feedList',
   ),
+  onRequest: (options) {
+    return options..headers.addAll({'os': Platform.isIOS ? 'ios' : 'android'});
+  },
   onResult: (result) {
     return result
         .merge(Result(message: '永远都是成功', valid: result.code == 'SUCCESS'));
@@ -49,7 +54,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key key, this.title = ""}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -71,13 +76,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    getApi(path: "ip").then((result) {
+    getAPI(path: "ip").then((result) {
       print("======");
       print(result.response?.statusCode);
       print(result.code);
       print(result.message);
       print(result.body);
       print(result.valid);
+      print(result.error);
       print("======");
     });
     super.initState();

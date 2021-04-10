@@ -206,7 +206,8 @@ class Result {
   }
 }
 
-typedef SessionInterceptorSendHandler = void Function(RequestOptions options);
+typedef SessionInterceptorSendHandler = dynamic Function(
+    RequestOptions options);
 typedef SessionInterceptorSuccessHandler = dynamic Function(Result result);
 
 class Session {
@@ -233,8 +234,9 @@ class Session {
       _options,
     )..interceptors.add(
         InterceptorsWrapper(
-          onRequest: (options, handler) {
-            return handler.next(options);
+          onRequest: (options, handler) async {
+            return handler
+                .next(onRequest != null ? await onRequest!(options) : options);
           },
         ),
       );

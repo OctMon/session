@@ -6,7 +6,7 @@ import 'package:session/session.dart';
 
 export 'package:session/session.dart' show Result;
 
-Config configApi(String baseURL) {
+Config configAPI(String baseURL) {
   return Config(
     baseUrl: baseURL ?? "https://www.httpbin.org/",
 //    proxy: 'PROXY localhost:8888',
@@ -29,8 +29,7 @@ SessionInterceptorSendHandler _onRequest = (options) async {
 };
 
 /// 响应结果拦截处理
-Result _onValidResult<T>(
-    Result result, bool validResult, BuildContext context) {
+Result _onValidResult(Result result, bool validResult, BuildContext context) {
   // 拦截处理一些错误
   if (validResult) {
     switch (result.code) {
@@ -55,7 +54,7 @@ Result _onValidResult<T>(
 /// validResult: 是否检验返回结果
 /// context: 上下文
 ///
-Future<Result> getApi(
+Future<Result> getAPI(
     {String baseUrl,
     String path = '',
     Map data,
@@ -99,7 +98,6 @@ Future<Result> postAPI(
 ///
 /// 发送请求并解析远程服务器返回的result对应的实体类型
 ///
-/// <T>: 要解析的实体类名(需要自动转换时必须要加)
 /// baseUrl: 主机地址
 /// path: 请求路径
 /// data: 请求参数
@@ -115,7 +113,7 @@ Future<Result> requestAPI(
     bool validResult = true,
     BuildContext context}) async {
   Session session = Session(
-    config: configApi(baseUrl),
+    config: configAPI(baseUrl),
     onRequest: _onRequest,
   );
   Result result = await session.request(path,
