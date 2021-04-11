@@ -1,3 +1,7 @@
+## 1.0.2
+
+* Migrating to null safety
+
 ## 1.0.1
 
 * Migrating to null safety

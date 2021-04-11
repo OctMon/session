@@ -273,7 +273,7 @@ class Session {
         data: {},
         list: [],
         message: config.errorResponse ?? '',
-        error: ErrorType.response);
+        error: null);
     try {
       response = await _dio.request(path,
           data: data,
@@ -311,7 +311,7 @@ class Session {
           errorType = ErrorType.timeout;
       }
       result = Result(
-          response: error.response,
+          response: Response(requestOptions: error.requestOptions),
           body: (error.response?.data is Map) ? error.response?.data : {},
           code: error.response?.statusCode.toString() ?? '',
           data: {},
@@ -323,61 +323,63 @@ class Session {
         print(error);
       }
     }
-    Map body = {};
-    if (response?.data is Map) {
-      body = response?.data ?? {};
-    } else if (response?.data is String) {
-      try {
-        body = json.decode(response?.data);
-      } catch (e) {
-        if (Config.logEnable) {
-          print(e);
+    if (result.error == null) {
+      Map body = {};
+      if (response?.data is Map) {
+        body = response?.data ?? {};
+      } else if (response?.data is String) {
+        try {
+          body = json.decode(response?.data);
+        } catch (e) {
+          if (Config.logEnable) {
+            print(e);
+          }
         }
       }
-    }
-    if (body is Map) {
-      var code = '';
-      var data = {};
-      var list = [];
-      var message = '';
-      try {
-        code = _getMap(body, config.code).toString();
-      } catch (e) {
-        if (Config.logEnable) {
-          print(e);
+      if (body is Map) {
+        var code = '';
+        var data = {};
+        var list = [];
+        var message = '';
+        try {
+          code = _getMap(body, config.code).toString();
+        } catch (e) {
+          if (Config.logEnable) {
+            print(e);
+          }
         }
-      }
-      try {
-        data = _getMap(body, config.data) ?? {};
-      } catch (e) {
-        if (Config.logEnable) {
-          print(e);
+        try {
+          data = _getMap(body, config.data) ?? {};
+        } catch (e) {
+          if (Config.logEnable) {
+            print(e);
+          }
         }
-      }
-      try {
-        list = _getMap(body, config.list) ?? [];
-      } catch (e) {
-        if (Config.logEnable) {
-          print(e);
+        try {
+          list = _getMap(body, config.list) ?? [];
+        } catch (e) {
+          if (Config.logEnable) {
+            print(e);
+          }
         }
-      }
-      try {
-        message = _getMap(body, config.message) ?? '';
-      } catch (e) {
-        if (Config.logEnable) {
-          print(e);
+        try {
+          message = _getMap(body, config.message) ?? '';
+        } catch (e) {
+          if (Config.logEnable) {
+            print(e);
+          }
         }
+        result = Result(
+            response: response,
+            body: body,
+            code: code,
+            data: data,
+            list: list,
+            message: message,
+            valid: code == config.validCode);
+      } else if (response?.data is Result) {
+        result = response?.data;
       }
-      result = Result(
-          response: response,
-          body: body,
-          code: code,
-          data: data,
-          list: list,
-          message: message,
-          valid: code == config.validCode);
-    } else if (response?.data is Result) {
-      result = response?.data;
     }
 
     if (onResult != null) {
