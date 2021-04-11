@@ -311,9 +311,9 @@ class Session {
           errorType = ErrorType.timeout;
       }
       result = Result(
-          response: Response(requestOptions: error.requestOptions),
+          response: error.response,
           body: (error.response?.data is Map) ? error.response?.data : {},
-          code: error.response?.statusCode.toString() ?? '',
+          code: '',
           data: {},
           list: [],
           message: message,
