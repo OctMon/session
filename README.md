@@ -14,7 +14,7 @@ https://javiercbk.github.io/json_to_dart/
 
 ```yaml
 dependencies:
-  session: ^1.0.3  #latest version
+  session: ^1.0.3+1  #latest version
 ```
 
 ### Example
@@ -71,7 +71,6 @@ Result _onValidResult(Result result, bool validResult, BuildContext context) {
 ///
 /// baseUrl: 主机地址
 /// path: 请求路径
-/// data: 请求参数
 /// queryParameters: URL携带请求参数
 /// validResult: 是否检验返回结果
 /// context: 上下文
@@ -79,14 +78,12 @@ Result _onValidResult(Result result, bool validResult, BuildContext context) {
 Future<Result> getAPI(
     {String baseUrl,
     String path = '',
-    Map data,
     Map<String, dynamic> queryParameters,
     bool validResult = true,
     BuildContext context}) async {
   return requestAPI(
       baseUrl: baseUrl,
       path: path,
-      data: data,
       queryParameters: queryParameters,
       options: Options(method: 'get'),
       validResult: validResult,
@@ -105,7 +102,7 @@ Future<Result> getAPI(
 Future<Result> postAPI(
     {String baseUrl,
     String path = '',
-    Map data,
+    data,
     bool validResult = true,
     BuildContext context}) async {
   return requestAPI(
@@ -129,7 +126,7 @@ Future<Result> postAPI(
 Future<Result> requestAPI(
     {String baseUrl,
     String path = '',
-    Map data,
+    data,
     Map<String, dynamic> queryParameters,
     Options options,
     bool validResult = true,

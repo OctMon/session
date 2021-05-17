@@ -219,7 +219,7 @@ class Session {
 
   Future<Result> request(
     String path, {
-    Map? data,
+    data,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
     Options? options,
