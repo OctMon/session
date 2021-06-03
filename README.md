@@ -14,7 +14,7 @@ https://javiercbk.github.io/json_to_dart/
 
 ```yaml
 dependencies:
-  session: ^1.0.3+1  #latest version
+  session: ^1.0.3+2  #latest version
 ```
 
 ### Example
@@ -72,6 +72,7 @@ Result _onValidResult(Result result, bool validResult, BuildContext context) {
 /// baseUrl: 主机地址
 /// path: 请求路径
 /// queryParameters: URL携带请求参数
+/// connectTimeout: 超时时间
 /// validResult: 是否检验返回结果
 /// context: 上下文
 ///
@@ -79,6 +80,7 @@ Future<Result> getAPI(
     {String baseUrl,
     String path = '',
     Map<String, dynamic> queryParameters,
+    int connectTimeout,
     bool validResult = true,
     BuildContext context}) async {
   return requestAPI(
@@ -86,6 +88,7 @@ Future<Result> getAPI(
       path: path,
       queryParameters: queryParameters,
       options: Options(method: 'get'),
+      connectTimeout: connectTimeout,
       validResult: validResult,
       context: context);
 }
@@ -96,6 +99,7 @@ Future<Result> getAPI(
 /// baseUrl: 主机地址
 /// path: 请求路径
 /// data: 请求参数
+/// connectTimeout: 超时时间
 /// validResult: 是否检验返回结果
 /// context: 上下文
 ///
@@ -103,6 +107,7 @@ Future<Result> postAPI(
     {String baseUrl,
     String path = '',
     data,
+    int connectTimeout,
     bool validResult = true,
     BuildContext context}) async {
   return requestAPI(
@@ -110,6 +115,7 @@ Future<Result> postAPI(
       path: path,
       data: data,
       options: Options(method: 'post'),
+      connectTimeout: connectTimeout,
       validResult: validResult,
       context: context);
 }
@@ -129,14 +135,20 @@ Future<Result> requestAPI(
     data,
     Map<String, dynamic> queryParameters,
     Options options,
+    int connectTimeout,
     bool validResult = true,
     BuildContext context}) async {
   Session session = Session(
     config: configAPI(baseUrl),
     onRequest: _onRequest,
   );
-  Result result = await session.request(path,
-      data: data, queryParameters: queryParameters, options: options);
+  Result result = await session.request(
+    path,
+    data: data,
+    queryParameters: queryParameters,
+    options: options,
+    connectTimeout: connectTimeout,
+  );
   return _onValidResult(result, validResult, context);
 }
 

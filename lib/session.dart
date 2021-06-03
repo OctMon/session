@@ -228,9 +228,10 @@ class Session {
     ProgressCallback? onReceiveProgress,
   }) async {
     final _options = BaseOptions(
-        baseUrl: config.baseUrl,
-        receiveTimeout: config.receiveTimeout * 1000);
-    _options.connectTimeout = connectTimeout != null ? connectTimeout * 1000 : config.connectTimeout * 1000;
+      baseUrl: config.baseUrl,
+      connectTimeout: connectTimeout != null ? connectTimeout * 1000 : config.connectTimeout * 1000,
+      receiveTimeout: config.receiveTimeout * 1000,
+    );
     final Dio _dio = Dio(
       _options,
     )..interceptors.add(

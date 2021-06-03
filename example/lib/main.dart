@@ -76,7 +76,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    getAPI(path: "ip", connectTimeout: 120).then((result) {
+    print("begin: ${DateTime.now()}");
+    getAPI(path: "ip", connectTimeout: 60).then((result) {
+      print("end: ${DateTime.now()}");
       print("======");
       print(result.response?.statusCode);
       print(result.code);

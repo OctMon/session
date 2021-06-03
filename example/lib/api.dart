@@ -49,15 +49,14 @@ Result _onValidResult(Result result, bool validResult, BuildContext context) {
 ///
 /// baseUrl: 主机地址
 /// path: 请求路径
-/// data: 请求参数
 /// queryParameters: URL携带请求参数
+/// connectTimeout: 超时时间
 /// validResult: 是否检验返回结果
 /// context: 上下文
 ///
 Future<Result> getAPI(
     {String baseUrl,
     String path = '',
-    Map data,
     Map<String, dynamic> queryParameters,
     int connectTimeout,
     bool validResult = true,
@@ -65,7 +64,6 @@ Future<Result> getAPI(
   return requestAPI(
       baseUrl: baseUrl,
       path: path,
-      data: data,
       queryParameters: queryParameters,
       options: Options(method: 'get'),
       connectTimeout: connectTimeout,
@@ -79,15 +77,16 @@ Future<Result> getAPI(
 /// baseUrl: 主机地址
 /// path: 请求路径
 /// data: 请求参数
+/// connectTimeout: 超时时间
 /// validResult: 是否检验返回结果
 /// context: 上下文
 ///
 Future<Result> postAPI(
     {String baseUrl,
     String path = '',
-    Map data,
-    bool validResult = true,
+    data,
     int connectTimeout,
+    bool validResult = true,
     BuildContext context}) async {
   return requestAPI(
       baseUrl: baseUrl,
