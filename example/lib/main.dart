@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    getAPI(path: "ip").then((result) {
+    getAPI(path: "ip", connectTimeout: 120).then((result) {
       print("======");
       print(result.response?.statusCode);
       print(result.code);
@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
-    Result result = await session.request('feed-app', data: {'page': _counter});
+    Result result = await session.request('feed-app', data: {'page': _counter}, connectTimeout: 60);
     if (result.valid) {
       // result.fillList(result.list.map((json) => FeedList.fromJson(json)).toList());
       // result.fillModels((json) => FeedList.fromJson(json));

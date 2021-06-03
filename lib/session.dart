@@ -223,13 +223,14 @@ class Session {
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
     Options? options,
+    int? connectTimeout,
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
     final _options = BaseOptions(
         baseUrl: config.baseUrl,
-        connectTimeout: config.connectTimeout * 1000,
         receiveTimeout: config.receiveTimeout * 1000);
+    _options.connectTimeout = connectTimeout != null ? connectTimeout * 1000 : config.connectTimeout * 1000;
     final Dio _dio = Dio(
       _options,
     )..interceptors.add(

@@ -59,6 +59,7 @@ Future<Result> getAPI(
     String path = '',
     Map data,
     Map<String, dynamic> queryParameters,
+    int connectTimeout,
     bool validResult = true,
     BuildContext context}) async {
   return requestAPI(
@@ -67,6 +68,7 @@ Future<Result> getAPI(
       data: data,
       queryParameters: queryParameters,
       options: Options(method: 'get'),
+      connectTimeout: connectTimeout,
       validResult: validResult,
       context: context);
 }
@@ -85,12 +87,14 @@ Future<Result> postAPI(
     String path = '',
     Map data,
     bool validResult = true,
+    int connectTimeout,
     BuildContext context}) async {
   return requestAPI(
       baseUrl: baseUrl,
       path: path,
       data: data,
       options: Options(method: 'post'),
+      connectTimeout: connectTimeout,
       validResult: validResult,
       context: context);
 }
@@ -107,16 +111,22 @@ Future<Result> postAPI(
 Future<Result> requestAPI(
     {String baseUrl,
     String path = '',
-    Map data,
+    data,
     Map<String, dynamic> queryParameters,
     Options options,
+    int connectTimeout,
     bool validResult = true,
     BuildContext context}) async {
   Session session = Session(
     config: configAPI(baseUrl),
     onRequest: _onRequest,
   );
-  Result result = await session.request(path,
-      data: data, queryParameters: queryParameters, options: options);
+  Result result = await session.request(
+    path,
+    data: data,
+    queryParameters: queryParameters,
+    options: options,
+    connectTimeout: connectTimeout,
+  );
   return _onValidResult(result, validResult, context);
 }
