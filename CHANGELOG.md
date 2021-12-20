@@ -1,3 +1,7 @@
+## 1.0.5
+
+* Upgrade Flutter 2.8
+
 ## 1.0.3+2
 
 * Add connectTimeout.

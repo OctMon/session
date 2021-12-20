@@ -326,7 +326,7 @@ class Session {
       }
     }
     if (result.error == null) {
-      Map body = {};
+      dynamic body = {};
       if (response?.data is Map) {
         body = response?.data ?? {};
       } else if (response?.data is String) {
