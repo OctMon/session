@@ -16,8 +16,8 @@ Session session = Session(
 //      badCertificateCallback: (cert, String host, int port) {
 //        return true;
 //      },
-    connectTimeout: 5,
-    receiveTimeout: 5,
+    connectTimeout: Duration(seconds: 5),
+    receiveTimeout: Duration(seconds: 5),
     code: 'result',
     list: 'feedList',
   ),
@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     print("begin: ${DateTime.now()}");
-    getAPI(path: "ip", connectTimeout: 60).then((result) {
+    getAPI(path: "ip", connectTimeout: Duration(seconds: 20)).then((result) {
       print("end: ${DateTime.now()}");
       print("======");
       print(result.response?.statusCode);
@@ -100,7 +100,8 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
-    Result result = await session.request('feed-app', data: {'page': _counter}, connectTimeout: 60);
+    Result result = await session.request('feed-app',
+        data: {'page': _counter}, connectTimeout: Duration(seconds: 60));
     if (result.valid) {
       // result.fillList(result.list.map((json) => FeedList.fromJson(json)).toList());
       // result.fillModels((json) => FeedList.fromJson(json));
@@ -160,7 +161,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
         ),

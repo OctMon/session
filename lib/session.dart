@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:dio/adapter.dart';
+import 'package:dio/io.dart';
 
 bool _debugFlag = false;
 
@@ -41,10 +41,10 @@ class Config {
       badCertificateCallback;
 
   /// second
-  final int connectTimeout;
+  final Duration connectTimeout;
 
   /// second
-  final int receiveTimeout;
+  final Duration receiveTimeout;
 
   final String code;
   final String data;
@@ -72,14 +72,14 @@ class Config {
   /// read the DioError.error if it is not null.
   /// If you set null to read the error returned by dio
   /// otherwise read the user-defined error message
-  final String? errorOther;
+  final String? errorUnknown;
 
   Config(
       {this.baseUrl = '',
       this.proxy = '',
       this.badCertificateCallback,
-      this.connectTimeout = 10,
-      this.receiveTimeout = 10,
+      this.connectTimeout = const Duration(seconds: 10),
+      this.receiveTimeout = const Duration(seconds: 10),
       this.code = 'code',
       this.data = 'data',
       this.list = 'data/list',
@@ -88,7 +88,7 @@ class Config {
       this.errorTimeout = '网络请求超时',
       this.errorResponse = '服务器错误，请稍后重试',
       this.errorCancel = '请求被取消了',
-      this.errorOther = '网络连接出错，请检查网络连接'});
+      this.errorUnknown = '网络连接出错，请检查网络连接'});
 }
 
 enum ErrorType {
@@ -101,9 +101,9 @@ enum ErrorType {
   /// When the request is cancelled, dio will throw a error with this type.
   cancel,
 
-  /// Default error type, Some other Error. In this case, you can
-  /// read the DioError.error if it is not null.
-  other,
+  /// Default error type, Some other [Error]. In this case, you can use the
+  /// [DioError.error] if it is not null.
+  unknown,
 }
 
 /// A Result.
@@ -223,14 +223,15 @@ class Session {
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
     Options? options,
-    int? connectTimeout,
+    Duration? connectTimeout,
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
     final _options = BaseOptions(
       baseUrl: config.baseUrl,
-      connectTimeout: connectTimeout != null ? connectTimeout * 1000 : config.connectTimeout * 1000,
-      receiveTimeout: config.receiveTimeout * 1000,
+      connectTimeout:
+          connectTimeout != null ? connectTimeout : config.connectTimeout,
+      receiveTimeout: config.receiveTimeout,
     );
     final Dio _dio = Dio(
       _options,
@@ -251,7 +252,7 @@ class Session {
       );
     }
     try {
-      (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+      (_dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
           (client) {
         if (config.proxy.isNotEmpty) {
           client.findProxy = (uri) {
@@ -261,6 +262,7 @@ class Session {
         if (config.badCertificateCallback != null) {
           client.badCertificateCallback = config.badCertificateCallback;
         }
+        return null;
       };
     } catch (e) {
       if (Config.logEnable) {
@@ -285,16 +287,15 @@ class Session {
           onSendProgress: onSendProgress,
           onReceiveProgress: onReceiveProgress);
     } on DioError catch (error) {
-      ErrorType errorType = ErrorType.other;
-      String message = error.message;
+      ErrorType errorType = ErrorType.unknown;
+      var message = "unknown";
+      if (config.errorUnknown != null) {
+        message = config.errorUnknown!;
+      }
+      errorType = ErrorType.unknown;
       switch (error.type) {
-        case DioErrorType.other:
-          if (config.errorOther != null) {
-            message = config.errorOther!;
-          }
-          errorType = ErrorType.other;
-          break;
-        case DioErrorType.response:
+        case DioErrorType.badResponse:
+        case DioErrorType.badCertificate:
           if (config.errorResponse != null) {
             message = config.errorResponse!;
           }

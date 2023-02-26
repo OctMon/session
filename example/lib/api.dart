@@ -10,8 +10,8 @@ Config configAPI(String baseURL) {
   return Config(
     baseUrl: baseURL ?? "https://www.httpbin.org/",
 //    proxy: 'PROXY localhost:8888',
-    connectTimeout: 10,
-    receiveTimeout: 10,
+    connectTimeout: Duration(seconds: 10),
+    receiveTimeout: Duration(seconds: 10),
   );
 }
 
@@ -58,7 +58,7 @@ Future<Result> getAPI(
     {String baseUrl,
     String path = '',
     Map<String, dynamic> queryParameters,
-    int connectTimeout,
+    Duration connectTimeout,
     bool validResult = true,
     BuildContext context}) async {
   return requestAPI(
@@ -85,7 +85,7 @@ Future<Result> postAPI(
     {String baseUrl,
     String path = '',
     data,
-    int connectTimeout,
+    Duration connectTimeout,
     bool validResult = true,
     BuildContext context}) async {
   return requestAPI(
@@ -113,7 +113,7 @@ Future<Result> requestAPI(
     data,
     Map<String, dynamic> queryParameters,
     Options options,
-    int connectTimeout,
+    Duration connectTimeout,
     bool validResult = true,
     BuildContext context}) async {
   Session session = Session(
