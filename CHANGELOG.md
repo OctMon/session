@@ -1,3 +1,7 @@
+## 1.1.0
+
+* Upgrade dio: ^5.0.1.
+
 ## 1.0.5
 
 * Upgrade Flutter 2.8
