@@ -293,6 +293,7 @@ class Session {
       }
       errorType = ErrorType.unknown;
       switch (error.type) {
+        case DioErrorType.connectionError:
         case DioErrorType.badResponse:
         case DioErrorType.badCertificate:
           if (config.errorResponse != null) {
@@ -313,6 +314,8 @@ class Session {
             message = config.errorTimeout!;
           }
           errorType = ErrorType.timeout;
+          break;
+        case DioErrorType.unknown:
           break;
       }
       result = Result(
