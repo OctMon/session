@@ -6,7 +6,7 @@ import 'package:session/session.dart';
 
 export 'package:session/session.dart' show Result;
 
-Config configAPI(String baseURL) {
+Config configAPI(String? baseURL) {
   return Config(
     baseUrl: baseURL ?? "https://www.httpbin.org/",
 //    proxy: 'PROXY localhost:8888',
@@ -29,7 +29,7 @@ SessionInterceptorSendHandler _onRequest = (options) async {
 };
 
 /// 响应结果拦截处理
-Result _onValidResult(Result result, bool validResult, BuildContext context) {
+Result _onValidResult(Result result, bool validResult, BuildContext? context) {
   // 拦截处理一些错误
   if (validResult) {
     switch (result.code) {
@@ -52,15 +52,15 @@ Result _onValidResult(Result result, bool validResult, BuildContext context) {
 /// queryParameters: URL携带请求参数
 /// connectTimeout: 超时时间
 /// validResult: 是否检验返回结果
-/// context: 上下文
+/// autoLoading: 展示Loading
 ///
 Future<Result> getAPI(
-    {String baseUrl,
+    {String? baseUrl,
     String path = '',
-    Map<String, dynamic> queryParameters,
-    Duration connectTimeout,
+    Map<String, dynamic>? queryParameters,
+    Duration? connectTimeout,
     bool validResult = true,
-    BuildContext context}) async {
+    BuildContext? context}) async {
   return requestAPI(
       baseUrl: baseUrl,
       path: path,
@@ -79,15 +79,15 @@ Future<Result> getAPI(
 /// data: 请求参数
 /// connectTimeout: 超时时间
 /// validResult: 是否检验返回结果
-/// context: 上下文
+/// autoLoading: 展示Loading
 ///
 Future<Result> postAPI(
-    {String baseUrl,
+    {String? baseUrl,
     String path = '',
     data,
-    Duration connectTimeout,
+    Duration? connectTimeout,
     bool validResult = true,
-    BuildContext context}) async {
+    BuildContext? context}) async {
   return requestAPI(
       baseUrl: baseUrl,
       path: path,
@@ -108,14 +108,14 @@ Future<Result> postAPI(
 /// context: 上下文
 ///
 Future<Result> requestAPI(
-    {String baseUrl,
+    {String? baseUrl,
     String path = '',
     data,
-    Map<String, dynamic> queryParameters,
-    Options options,
-    Duration connectTimeout,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    Duration? connectTimeout,
     bool validResult = true,
-    BuildContext context}) async {
+    BuildContext? context}) async {
   Session session = Session(
     config: configAPI(baseUrl),
     onRequest: _onRequest,

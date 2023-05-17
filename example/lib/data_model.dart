@@ -1,12 +1,12 @@
 import 'dart:convert' show json;
 
 class DataMode {
-  bool isHistory;
-  int counts;
-  List<FeedList> feedList;
-  String message;
-  bool more;
-  String result;
+  bool? isHistory;
+  int? counts;
+  List<FeedList>? feedList;
+  String? message;
+  bool? more;
+  String? result;
 
   DataMode({
     this.isHistory,
@@ -17,14 +17,14 @@ class DataMode {
     this.result,
   });
 
-  static DataMode fromJson(jsonRes) {
+  static DataMode? fromJson(jsonRes) {
     if (jsonRes == null) return null;
 
-    List<FeedList> feedList = jsonRes['feedList'] is List ? [] : null;
+    List<FeedList>? feedList = jsonRes['feedList'] is List ? [] : null;
     if (feedList != null) {
       for (var item in jsonRes['feedList']) {
         if (item != null) {
-          feedList.add(FeedList.fromJson(item));
+          feedList.add(FeedList.fromJson(item)!);
         }
       }
     }
@@ -54,42 +54,42 @@ class DataMode {
 }
 
 class FeedList {
-  int postId;
-  String type;
-  String url;
-  String siteId;
-  String authorId;
-  String publishedAt;
-  String passedTime;
-  String excerpt;
-  int favorites;
-  int comments;
-  bool rewardable;
-  String parentComments;
-  String rewards;
-  int views;
-  bool collected;
-  int shares;
-  bool recommend;
-  bool delete;
-  bool update;
-  String content;
-  String title;
-  int imageCount;
-  List<Images> images;
-  Object titleImage;
-  List<String> tags;
-  List<String> eventTags;
-  List<Object> favoriteListPrefix;
-  List<Object> rewardListPrefix;
-  List<Object> commentListPrefix;
-  String dataType;
-  String createdAt;
-  List<Object> sites;
-  Site site;
-  String recomType;
-  String rqtId;
-  bool isFavorite;
+  int? postId;
+  String? type;
+  String? url;
+  String? siteId;
+  String? authorId;
+  String? publishedAt;
+  String? passedTime;
+  String? excerpt;
+  int? favorites;
+  int? comments;
+  bool? rewardable;
+  String? parentComments;
+  String? rewards;
+  int? views;
+  bool? collected;
+  int? shares;
+  bool? recommend;
+  bool? delete;
+  bool? update;
+  String? content;
+  String? title;
+  int? imageCount;
+  List<Images>? images;
+  Object? titleImage;
+  List<String>? tags;
+  List<String>? eventTags;
+  List<Object>? favoriteListPrefix;
+  List<Object>? rewardListPrefix;
+  List<Object>? commentListPrefix;
+  String? dataType;
+  String? createdAt;
+  List<Object>? sites;
+  Site? site;
+  String? recomType;
+  String? rqtId;
+  bool? isFavorite;
 
   FeedList({
     this.postId,
@@ -130,19 +130,19 @@ class FeedList {
     this.isFavorite,
   });
 
-  static FeedList fromJson(jsonRes) {
+  static FeedList? fromJson(jsonRes) {
     if (jsonRes == null) return null;
 
-    List<Images> images = jsonRes['images'] is List ? [] : null;
+    List<Images>? images = jsonRes['images'] is List ? [] : null;
     if (images != null) {
       for (var item in jsonRes['images']) {
         if (item != null) {
-          images.add(Images.fromJson(item));
+          images.add(Images.fromJson(item)!);
         }
       }
     }
 
-    List<String> tags = jsonRes['tags'] is List ? [] : null;
+    List<String>? tags = jsonRes['tags'] is List ? [] : null;
     if (tags != null) {
       for (var item in jsonRes['tags']) {
         if (item != null) {
@@ -151,7 +151,7 @@ class FeedList {
       }
     }
 
-    List<String> eventTags = jsonRes['event_tags'] is List ? [] : null;
+    List<String>? eventTags = jsonRes['event_tags'] is List ? [] : null;
     if (eventTags != null) {
       for (var item in jsonRes['event_tags']) {
         if (item != null) {
@@ -160,7 +160,7 @@ class FeedList {
       }
     }
 
-    List<Object> favoriteListPrefix =
+    List<Object>? favoriteListPrefix =
         jsonRes['favorite_list_prefix'] is List ? [] : null;
     if (favoriteListPrefix != null) {
       for (var item in jsonRes['favorite_list_prefix']) {
@@ -170,7 +170,7 @@ class FeedList {
       }
     }
 
-    List<Object> rewardListPrefix =
+    List<Object>? rewardListPrefix =
         jsonRes['reward_list_prefix'] is List ? [] : null;
     if (rewardListPrefix != null) {
       for (var item in jsonRes['reward_list_prefix']) {
@@ -180,7 +180,7 @@ class FeedList {
       }
     }
 
-    List<Object> commentListPrefix =
+    List<Object>? commentListPrefix =
         jsonRes['comment_list_prefix'] is List ? [] : null;
     if (commentListPrefix != null) {
       for (var item in jsonRes['comment_list_prefix']) {
@@ -190,7 +190,7 @@ class FeedList {
       }
     }
 
-    List<Object> sites = jsonRes['sites'] is List ? [] : null;
+    List<Object>? sites = jsonRes['sites'] is List ? [] : null;
     if (sites != null) {
       for (var item in jsonRes['sites']) {
         if (item != null) {
@@ -284,14 +284,14 @@ class FeedList {
 }
 
 class Images {
-  int imgId;
-  String imgIdStr;
-  int userId;
-  String title;
-  String excerpt;
-  int width;
-  int height;
-  String description;
+  int? imgId;
+  String? imgIdStr;
+  int? userId;
+  String? title;
+  String? excerpt;
+  int? width;
+  int? height;
+  String? description;
 
   Images({
     this.imgId,
@@ -304,7 +304,7 @@ class Images {
     this.description,
   });
 
-  static Images fromJson(jsonRes) => jsonRes == null
+  static Images? fromJson(jsonRes) => jsonRes == null
       ? null
       : Images(
           imgId: jsonRes['img_id'],
@@ -335,20 +335,20 @@ class Images {
 }
 
 class Site {
-  String siteId;
-  String type;
-  String name;
-  String domain;
-  String description;
-  int followers;
-  String url;
-  String icon;
-  bool isBindEverphoto;
-  bool hasEverphotoNote;
-  bool verified;
-  int verifications;
-  List<VerificationList> verificationList;
-  bool isFollowing;
+  String? siteId;
+  String? type;
+  String? name;
+  String? domain;
+  String? description;
+  int? followers;
+  String? url;
+  String? icon;
+  bool? isBindEverphoto;
+  bool? hasEverphotoNote;
+  bool? verified;
+  int? verifications;
+  List<VerificationList>? verificationList;
+  bool? isFollowing;
 
   Site({
     this.siteId,
@@ -367,15 +367,15 @@ class Site {
     this.isFollowing,
   });
 
-  static Site fromJson(jsonRes) {
+  static Site? fromJson(jsonRes) {
     if (jsonRes == null) return null;
 
-    List<VerificationList> verificationList =
+    List<VerificationList>? verificationList =
         jsonRes['verification_list'] is List ? [] : null;
     if (verificationList != null) {
       for (var item in jsonRes['verification_list']) {
         if (item != null) {
-          verificationList.add(VerificationList.fromJson(item));
+          verificationList.add(VerificationList.fromJson(item)!);
         }
       }
     }
@@ -421,15 +421,15 @@ class Site {
 }
 
 class VerificationList {
-  int verificationType;
-  String verificationReason;
+  int? verificationType;
+  String? verificationReason;
 
   VerificationList({
     this.verificationType,
     this.verificationReason,
   });
 
-  static VerificationList fromJson(jsonRes) => jsonRes == null
+  static VerificationList? fromJson(jsonRes) => jsonRes == null
       ? null
       : VerificationList(
           verificationType: jsonRes['verification_type'],

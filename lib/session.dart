@@ -38,7 +38,7 @@ class Config {
   /// with a server certificate that cannot be authenticated by any of our
   /// trusted root certificates.
   final bool Function(X509Certificate cert, String host, int port)?
-      badCertificateCallback;
+  badCertificateCallback;
 
   /// second
   final Duration connectTimeout;
@@ -74,21 +74,20 @@ class Config {
   /// otherwise read the user-defined error message
   final String? errorUnknown;
 
-  Config(
-      {this.baseUrl = '',
-      this.proxy = '',
-      this.badCertificateCallback,
-      this.connectTimeout = const Duration(seconds: 10),
-      this.receiveTimeout = const Duration(seconds: 10),
-      this.code = 'code',
-      this.data = 'data',
-      this.list = 'data/list',
-      this.message = 'message',
-      this.validCode = '0',
-      this.errorTimeout = '网络请求超时',
-      this.errorResponse = '服务器错误，请稍后重试',
-      this.errorCancel = '请求被取消了',
-      this.errorUnknown = '网络连接出错，请检查网络连接'});
+  Config({this.baseUrl = '',
+    this.proxy = '',
+    this.badCertificateCallback,
+    this.connectTimeout = const Duration(seconds: 10),
+    this.receiveTimeout = const Duration(seconds: 10),
+    this.code = 'code',
+    this.data = 'data',
+    this.list = 'data/list',
+    this.message = 'message',
+    this.validCode = '0',
+    this.errorTimeout = '网络请求超时',
+    this.errorResponse = '服务器错误，请稍后重试',
+    this.errorCancel = '请求被取消了',
+    this.errorUnknown = '网络连接出错，请检查网络连接'});
 }
 
 enum ErrorType {
@@ -119,15 +118,14 @@ class Result {
   dynamic _model;
   List _models = [];
 
-  Result(
-      {this.response,
-      this.body = const {},
-      this.code = '',
-      this.message = '',
-      this.data = const {},
-      this.list = const [],
-      this.error,
-      this.valid = false});
+  Result({this.response,
+    this.body = const {},
+    this.code = '',
+    this.message = '',
+    this.data = const {},
+    this.list = const [],
+    this.error,
+    this.valid = false});
 
   merge(Result other) {
     Result result = Result(
@@ -217,8 +215,7 @@ class Session {
 
   Session({required this.config, this.onRequest, this.onResult});
 
-  Future<Result> request(
-    String path, {
+  Future<Result> request(String path, {
     data,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
@@ -230,12 +227,13 @@ class Session {
     final _options = BaseOptions(
       baseUrl: config.baseUrl,
       connectTimeout:
-          connectTimeout != null ? connectTimeout : config.connectTimeout,
+      connectTimeout != null ? connectTimeout : config.connectTimeout,
       receiveTimeout: config.receiveTimeout,
     );
     final Dio _dio = Dio(
       _options,
-    )..interceptors.add(
+    )
+      ..interceptors.add(
         InterceptorsWrapper(
           onRequest: (options, handler) async {
             return handler
@@ -288,7 +286,8 @@ class Session {
           onReceiveProgress: onReceiveProgress);
     } on DioError catch (error) {
       ErrorType errorType = ErrorType.unknown;
-      var message = "unknown";
+      var message = "$error";
+
       if (config.errorUnknown != null) {
         message = config.errorUnknown!;
       }
@@ -307,11 +306,14 @@ class Session {
           }
           errorType = ErrorType.cancel;
           break;
-        default:
+        case DioErrorType.connectionTimeout:
+        case DioErrorType.sendTimeout:
+        case DioErrorType.receiveTimeout:
           if (config.errorTimeout != null) {
             message = config.errorTimeout!;
           }
           errorType = ErrorType.timeout;
+          break;
       }
       result = Result(
           response: error.response,
@@ -391,8 +393,7 @@ class Session {
     return result;
   }
 
-  Future<Result> get(
-    String path, {
+  Future<Result> get(String path, {
     Map? data,
     Map<String, dynamic>? queryParameters,
   }) async {
@@ -402,8 +403,7 @@ class Session {
         options: Options(method: 'get'));
   }
 
-  Future<Result> post(
-    String path, {
+  Future<Result> post(String path, {
     Map? data,
   }) async {
     return request(path, data: data, options: Options(method: 'post'));
