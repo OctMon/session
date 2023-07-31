@@ -1,10 +1,9 @@
 library session;
 
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
+import 'package:dio/src/adapters/io_adapter.dart';
 
 bool _debugFlag = false;
 
@@ -27,18 +26,28 @@ class Config {
   /// it can contain sub path, like: "https://www.google.com/api/".
   final String baseUrl;
 
-  /// findProxy
-  ///
-  /// If you need Charles local interception
-  ///
-  /// please set proxy = 'PROXY localhost:8888'
-  final String proxy;
+  /// createHttpClient: () {
+  ///   // Don't trust any certificate just because their root cert is trusted.
+  ///   final client =
+  ///       HttpClient(context: SecurityContext(withTrustedRoots: false));
+  ///   // You can test the intermediate / root cert here. We just ignore it.
+  ///   client.badCertificateCallback = (cert, host, port) => true;
+  ///   // Config the client.
+  ///   client.findProxy = (uri) {
+  ///     // Forward all request to proxy "localhost:8888".
+  ///     // Be aware, the proxy should went through you running device,
+  ///     // not the host platform.
+  ///     return "PROXY localhost:8888";
+  ///   };
+  CreateHttpClient? createHttpClient;
 
   /// Sets a callback that will decide whether to accept a secure connection
   /// with a server certificate that cannot be authenticated by any of our
   /// trusted root certificates.
-  final bool Function(X509Certificate cert, String host, int port)?
-  badCertificateCallback;
+  /// badCertificateCallback: (cert, String host, int port) {
+  ///   return true;
+  /// },
+  final ValidateCertificate? badCertificateCallback;
 
   /// second
   final Duration connectTimeout;
@@ -74,20 +83,21 @@ class Config {
   /// otherwise read the user-defined error message
   final String? errorUnknown;
 
-  Config({this.baseUrl = '',
-    this.proxy = '',
-    this.badCertificateCallback,
-    this.connectTimeout = const Duration(seconds: 10),
-    this.receiveTimeout = const Duration(seconds: 10),
-    this.code = 'code',
-    this.data = 'data',
-    this.list = 'data/list',
-    this.message = 'message',
-    this.validCode = '0',
-    this.errorTimeout = '网络请求超时',
-    this.errorResponse = '服务器错误，请稍后重试',
-    this.errorCancel = '请求被取消了',
-    this.errorUnknown = '网络连接出错，请检查网络连接'});
+  Config(
+      {this.baseUrl = '',
+      this.createHttpClient,
+      this.badCertificateCallback,
+      this.connectTimeout = const Duration(seconds: 10),
+      this.receiveTimeout = const Duration(seconds: 10),
+      this.code = 'code',
+      this.data = 'data',
+      this.list = 'data/list',
+      this.message = 'message',
+      this.validCode = '0',
+      this.errorTimeout = '网络请求超时',
+      this.errorResponse = '服务器错误，请稍后重试',
+      this.errorCancel = '请求被取消了',
+      this.errorUnknown = '网络连接出错，请检查网络连接'});
 }
 
 enum ErrorType {
@@ -101,7 +111,7 @@ enum ErrorType {
   cancel,
 
   /// Default error type, Some other [Error]. In this case, you can use the
-  /// [DioError.error] if it is not null.
+  /// [DioExceptionType.error] if it is not null.
   unknown,
 }
 
@@ -118,14 +128,15 @@ class Result {
   dynamic _model;
   List _models = [];
 
-  Result({this.response,
-    this.body = const {},
-    this.code = '',
-    this.message = '',
-    this.data = const {},
-    this.list = const [],
-    this.error,
-    this.valid = false});
+  Result(
+      {this.response,
+      this.body = const {},
+      this.code = '',
+      this.message = '',
+      this.data = const {},
+      this.list = const [],
+      this.error,
+      this.valid = false});
 
   merge(Result other) {
     Result result = Result(
@@ -215,7 +226,8 @@ class Session {
 
   Session({required this.config, this.onRequest, this.onResult});
 
-  Future<Result> request(String path, {
+  Future<Result> request(
+    String path, {
     data,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
@@ -227,13 +239,12 @@ class Session {
     final _options = BaseOptions(
       baseUrl: config.baseUrl,
       connectTimeout:
-      connectTimeout != null ? connectTimeout : config.connectTimeout,
+          connectTimeout != null ? connectTimeout : config.connectTimeout,
       receiveTimeout: config.receiveTimeout,
     );
     final Dio _dio = Dio(
       _options,
-    )
-      ..interceptors.add(
+    )..interceptors.add(
         InterceptorsWrapper(
           onRequest: (options, handler) async {
             return handler
@@ -250,18 +261,10 @@ class Session {
       );
     }
     try {
-      (_dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
-          (client) {
-        if (config.proxy.isNotEmpty) {
-          client.findProxy = (uri) {
-            return config.proxy;
-          };
-        }
-        if (config.badCertificateCallback != null) {
-          client.badCertificateCallback = config.badCertificateCallback;
-        }
-        return null;
-      };
+      _dio.httpClientAdapter = IOHttpClientAdapter(
+        createHttpClient: config.createHttpClient,
+        validateCertificate: config.badCertificateCallback,
+      );
     } catch (e) {
       if (Config.logEnable) {
         print(e);
@@ -284,7 +287,7 @@ class Session {
           options: options,
           onSendProgress: onSendProgress,
           onReceiveProgress: onReceiveProgress);
-    } on DioError catch (error) {
+    } on DioException catch (error) {
       ErrorType errorType = ErrorType.unknown;
       var message = "$error";
 
@@ -293,29 +296,29 @@ class Session {
       }
       errorType = ErrorType.unknown;
       switch (error.type) {
-        case DioErrorType.connectionError:
-        case DioErrorType.badResponse:
-        case DioErrorType.badCertificate:
+        case DioExceptionType.connectionError:
+        case DioExceptionType.badResponse:
+        case DioExceptionType.badCertificate:
           if (config.errorResponse != null) {
             message = config.errorResponse!;
           }
           errorType = ErrorType.response;
           break;
-        case DioErrorType.cancel:
+        case DioExceptionType.cancel:
           if (config.errorCancel != null) {
             message = config.errorCancel!;
           }
           errorType = ErrorType.cancel;
           break;
-        case DioErrorType.connectionTimeout:
-        case DioErrorType.sendTimeout:
-        case DioErrorType.receiveTimeout:
+        case DioExceptionType.connectionTimeout:
+        case DioExceptionType.sendTimeout:
+        case DioExceptionType.receiveTimeout:
           if (config.errorTimeout != null) {
             message = config.errorTimeout!;
           }
           errorType = ErrorType.timeout;
           break;
-        case DioErrorType.unknown:
+        case DioExceptionType.unknown:
           break;
       }
       result = Result(
@@ -396,7 +399,8 @@ class Session {
     return result;
   }
 
-  Future<Result> get(String path, {
+  Future<Result> get(
+    String path, {
     Map? data,
     Map<String, dynamic>? queryParameters,
   }) async {
@@ -406,7 +410,8 @@ class Session {
         options: Options(method: 'get'));
   }
 
-  Future<Result> post(String path, {
+  Future<Result> post(
+    String path, {
     Map? data,
   }) async {
     return request(path, data: data, options: Options(method: 'post'));

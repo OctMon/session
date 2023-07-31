@@ -1,3 +1,8 @@
+## 1.1.3
+
+* Upgrade dio: ^5.3.0.
+* Use IOHttpClientAdapter.onHttpClientCreate
+
 ## 1.1.2
 
 * Upgrade dio: ^5.1.2.

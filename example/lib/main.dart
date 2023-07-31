@@ -12,10 +12,27 @@ void main() => runApp(MyApp());
 Session session = Session(
   config: Config(
     baseUrl: 'https://api.tuchong.com/',
-//      proxy: 'PROXY localhost:8888',
-//      badCertificateCallback: (cert, String host, int port) {
-//        return true;
-//      },
+    createHttpClient: () {
+      // Don't trust any certificate just because their root cert is trusted.
+      final client =
+          HttpClient(context: SecurityContext(withTrustedRoots: false));
+      // You can test the intermediate / root cert here. We just ignore it.
+      client.badCertificateCallback = (cert, host, port) => true;
+      // Config the client.
+      client.findProxy = (uri) {
+        // Forward all request to proxy "localhost:8888".
+        // Be aware, the proxy should went through you running device,
+        // not the host platform.
+        return "PROXY localhost:8888";
+      };
+      // You can also create a new HttpClient for Dio instead of returning,
+      // but a client must being returned here.
+      return client;
+    },
+    badCertificateCallback: (cert, String host, int port) {
+      print("badCertificateCallback: $host");
+      return true;
+    },
     connectTimeout: Duration(seconds: 5),
     receiveTimeout: Duration(seconds: 5),
     code: 'result',
