@@ -25,9 +25,9 @@ Session session = Session(
     //     // not the host platform.
     //     return "PROXY localhost:8888";
     //   };
-      // You can also create a new HttpClient for Dio instead of returning,
-      // but a client must being returned here.
-      // return client;
+    //   // You can also create a new HttpClient for Dio instead of returning,
+    //   // but a client must being returned here.
+    //   return client;
     // },
     badCertificateCallback: (cert, String host, int port) {
       print("badCertificateCallback: $host");

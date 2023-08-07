@@ -14,7 +14,7 @@ https://javiercbk.github.io/json_to_dart/
 
 ```yaml
 dependencies:
-  session: ^1.1.3  #latest version
+  session: ^1.1.4  #latest version
 ```
 
 ### Example
@@ -31,9 +31,25 @@ export 'package:session/session.dart' show Result;
 Config configAPI(String baseURL) {
   return Config(
     baseUrl: baseURL ?? "https://www.httpbin.org/",
-//    proxy: 'PROXY localhost:8888',
-    connectTimeout: 10,
-    receiveTimeout: 10,
+    // createHttpClient: () {
+    //   // Don't trust any certificate just because their root cert is trusted.
+    //   final client =
+    //   HttpClient(context: SecurityContext(withTrustedRoots: false));
+    //   // You can test the intermediate / root cert here. We just ignore it.
+    //   client.badCertificateCallback = (cert, host, port) => true;
+    //   // Config the client.
+    //   client.findProxy = (uri) {
+    //     // Forward all request to proxy "localhost:8888".
+    //     // Be aware, the proxy should went through you running device,
+    //     // not the host platform.
+    //     return "PROXY localhost:8888";
+    //   };
+    //   // You can also create a new HttpClient for Dio instead of returning,
+    //       but a client must being returned here.
+    //   return client;
+    // },
+    connectTimeout: Duration(seconds: 5),
+    receiveTimeout: Duration(seconds: 5),
   );
 }
 
@@ -147,7 +163,7 @@ Future<Result> requestAPI(
     data: data,
     queryParameters: queryParameters,
     options: options,
-    connectTimeout: connectTimeout,
+    connectTimeout: Duration(seconds: connectTimeout),
   );
   return _onValidResult(result, validResult, context);
 }
