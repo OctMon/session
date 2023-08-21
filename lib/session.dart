@@ -289,7 +289,7 @@ class Session {
           onReceiveProgress: onReceiveProgress);
     } on DioException catch (error) {
       ErrorType errorType = ErrorType.unknown;
-      var message = "$error";
+      var message = "${error.message ?? error.error}";
 
       if (config.errorUnknown != null) {
         message = config.errorUnknown!;

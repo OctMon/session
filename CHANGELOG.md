@@ -1,3 +1,7 @@
+## 1.1.5
+
+* Use error.message ?? error.error
+
 ## 1.1.4
 
 * Upgrade dio: ^5.3.2.
