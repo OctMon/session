@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:example/api.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:session/session.dart';
@@ -39,7 +40,10 @@ Session session = Session(
     list: 'feedList',
   ),
   onRequest: (options) {
-    return options..headers.addAll({'os': Platform.isIOS ? 'ios' : 'android'});
+    return options
+      ..headers.addAll({
+        'os': kIsWeb ? "web" : Platform.operatingSystem,
+      });
   },
   onResult: (result) {
     return result

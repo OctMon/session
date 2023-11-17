@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:session/session.dart';
 
@@ -17,7 +18,7 @@ Config configAPI(String? baseURL) {
 
 SessionInterceptorSendHandler _onRequest = (options) async {
   var headers = {
-    'os': Platform.isIOS ? 'ios' : 'android',
+    'os': kIsWeb ? "web" : Platform.operatingSystem,
   };
   options.headers.addAll(headers);
   // if (UserStore.store.getState().isLogin) {

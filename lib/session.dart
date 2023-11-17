@@ -260,11 +260,16 @@ class Session {
         ),
       );
     }
+    const bool kIsWeb = bool.fromEnvironment('dart.library.js_util');
     try {
-      _dio.httpClientAdapter = IOHttpClientAdapter(
-        createHttpClient: config.createHttpClient,
-        validateCertificate: config.badCertificateCallback,
-      );
+      if (kIsWeb) {
+        // _dio.httpClientAdapter = BrowserHttpClientAdapter();
+      } else {
+        _dio.httpClientAdapter = IOHttpClientAdapter(
+          createHttpClient: config.createHttpClient,
+          validateCertificate: config.badCertificateCallback,
+        );
+      }
     } catch (e) {
       if (Config.logEnable) {
         print(e);
