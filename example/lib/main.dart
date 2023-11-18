@@ -122,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter++;
     });
     Result result = await session.request('feed-app',
-        data: {'page': _counter}, connectTimeout: Duration(seconds: 60));
+        queryParameters: {'page': _counter}, connectTimeout: Duration(seconds: 60));
     if (result.valid) {
       // result.fillList(result.list.map((json) => FeedList.fromJson(json)).toList());
       // result.fillModels((json) => FeedList.fromJson(json));

@@ -1,3 +1,7 @@
+## 1.1.6
+
+* Upgrade Dio version 5.3.3
+
 ## 1.1.5
 
 * Use error.message ?? error.error
