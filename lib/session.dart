@@ -20,6 +20,7 @@ bool _isDebug() {
 
 class Config {
   static bool logEnable = _isDebug();
+  static bool catchLogEnable = _isDebug();
 
   /// Request base url,
   ///
@@ -162,9 +163,7 @@ class Result {
     try {
       _model = onModel(data);
     } catch (e) {
-      if (Config.logEnable) {
-        print(e);
-      }
+      _printCatchLog(e);
     }
   }
 
@@ -174,9 +173,7 @@ class Result {
         _models = list.map((v) => onModels(v)).toList();
       }
     } catch (e) {
-      if (Config.logEnable) {
-        print(e);
-      }
+      _printCatchLog(e);
     }
   }
 
@@ -196,9 +193,7 @@ class Result {
         _model = onMap(body);
       }
     } catch (e) {
-      if (Config.logEnable) {
-        print(e);
-      }
+      _printCatchLog(e);
     }
   }
 
@@ -271,9 +266,7 @@ class Session {
         );
       }
     } catch (e) {
-      if (Config.logEnable) {
-        print(e);
-      }
+      _printCatchLog(e);
     }
 
     Response? response;
@@ -334,10 +327,8 @@ class Session {
           list: [],
           message: message,
           error: errorType);
-    } catch (error) {
-      if (Config.logEnable) {
-        print(error);
-      }
+    } catch (e) {
+      _printCatchLog(e);
     }
     if (result.error == null) {
       dynamic body = {};
@@ -347,9 +338,7 @@ class Session {
         try {
           body = json.decode(response?.data);
         } catch (e) {
-          if (Config.logEnable) {
-            print(e);
-          }
+          _printCatchLog(e);
         }
       }
       if (body is Map) {
@@ -360,30 +349,22 @@ class Session {
         try {
           code = _getMap(body, config.code).toString();
         } catch (e) {
-          if (Config.logEnable) {
-            print(e);
-          }
+          _printCatchLog(e);
         }
         try {
           data = _getMap(body, config.data) ?? {};
         } catch (e) {
-          if (Config.logEnable) {
-            print(e);
-          }
+          _printCatchLog(e);
         }
         try {
           list = _getMap(body, config.list) ?? [];
         } catch (e) {
-          if (Config.logEnable) {
-            print(e);
-          }
+          _printCatchLog(e);
         }
         try {
           message = _getMap(body, config.message) ?? '';
         } catch (e) {
-          if (Config.logEnable) {
-            print(e);
-          }
+          _printCatchLog(e);
         }
         result = Result(
             response: response,
@@ -436,5 +417,16 @@ class Session {
       return map;
     }
     return null;
+  }
+}
+
+void _printCatchLog(e) {
+  if (Config.catchLogEnable) {
+    print("⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️");
+    print(e);
+    if (e is Error) {
+      print(e.stackTrace);
+    }
+    print("⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️");
   }
 }
