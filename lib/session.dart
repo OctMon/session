@@ -242,6 +242,9 @@ class Session {
     )..interceptors.add(
         InterceptorsWrapper(
           onRequest: (options, handler) async {
+            if (options.data is FormData) {
+              return handler.next(options);
+            }
             return handler
                 .next(onRequest != null ? await onRequest!(options) : options);
           },
