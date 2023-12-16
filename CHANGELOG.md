@@ -1,4 +1,8 @@
-## 1.1.7
+## 1.1.8
+
+* Add catchLogEnable
+
+* ## 1.1.7
 
 * Upgrade Dio version 5.4.0
 
