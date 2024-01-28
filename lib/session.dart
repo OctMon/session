@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:dio/src/adapters/io_adapter.dart';
 
+typedef SessionExceptionType = DioExceptionType;
+
 bool _debugFlag = false;
 
 /// is app run a debug mode.
@@ -63,25 +65,22 @@ class Config {
 
   final String validCode;
 
-  /// It occurs when timeout
-  /// If you set null to read the error returned by dio
-  /// otherwise read the user-defined error message
+  /// Caused by timeout
   final String? errorTimeout;
 
-  /// When the server response, but with a incorrect status, such as 404, 503...
-  /// If you set null to read the error returned by dio
-  /// otherwise read the user-defined error message
-  final String? errorResponse;
+  /// Caused for example by a `xhr.onError` or SocketExceptions.
+  /// or Caused by an incorrect certificate as configured by [ValidateCertificate].
+  final String? errorConnection;
 
-  /// When the request is cancelled, dio will throw a error with this type.
-  /// If you set null to read the error returned by dio
-  /// otherwise read the user-defined error message
+  /// The [DioException] was caused by an incorrect status code as configured by
+  /// [ValidateStatus].
+  final String? errorBadResponse;
+
+  ///  When the request is cancelled, dio will throw a error with this type.
   final String? errorCancel;
 
-  /// Default error type, Some other Error. In this case, you can
-  /// read the DioError.error if it is not null.
-  /// If you set null to read the error returned by dio
-  /// otherwise read the user-defined error message
+  /// Default error type, Some other [Error]. In this case, you can use the
+  /// [DioException.error] if it is not null.
   final String? errorUnknown;
 
   Config(
@@ -96,24 +95,10 @@ class Config {
       this.message = 'message',
       this.validCode = '0',
       this.errorTimeout = '网络请求超时',
-      this.errorResponse = '服务器错误，请稍后重试',
+      this.errorConnection = '网络连接出错，请检查网络连接',
+      this.errorBadResponse = '服务器错误，请稍后重试',
       this.errorCancel = '请求被取消了',
-      this.errorUnknown = '网络连接出错，请检查网络连接'});
-}
-
-enum ErrorType {
-  /// It occurs when timeout.
-  timeout,
-
-  /// When the server response, but with a incorrect status, such as 404, 503...
-  response,
-
-  /// When the request is cancelled, dio will throw a error with this type.
-  cancel,
-
-  /// Default error type, Some other [Error]. In this case, you can use the
-  /// [DioExceptionType.error] if it is not null.
-  unknown,
+      this.errorUnknown = '未知错误'});
 }
 
 /// A Result.
@@ -125,7 +110,7 @@ class Result {
   final Map data;
   final List list;
   final bool valid;
-  final ErrorType? error;
+  final DioExceptionType? error;
   dynamic _model;
   List _models = [];
 
@@ -278,7 +263,7 @@ class Session {
         body: {},
         data: {},
         list: [],
-        message: config.errorResponse ?? '',
+        message: config.errorUnknown ?? '',
         error: null);
     try {
       response = await _dio.request(path,
@@ -289,27 +274,27 @@ class Session {
           onSendProgress: onSendProgress,
           onReceiveProgress: onReceiveProgress);
     } on DioException catch (error) {
-      ErrorType errorType = ErrorType.unknown;
       var message = "${error.message ?? error.error}";
 
       if (config.errorUnknown != null) {
         message = config.errorUnknown!;
       }
-      errorType = ErrorType.unknown;
       switch (error.type) {
         case DioExceptionType.connectionError:
-        case DioExceptionType.badResponse:
         case DioExceptionType.badCertificate:
-          if (config.errorResponse != null) {
-            message = config.errorResponse!;
+          if (config.errorConnection != null) {
+            message = config.errorConnection!;
           }
-          errorType = ErrorType.response;
+          break;
+        case DioExceptionType.badResponse:
+          if (config.errorBadResponse != null) {
+            message = config.errorBadResponse!;
+          }
           break;
         case DioExceptionType.cancel:
           if (config.errorCancel != null) {
             message = config.errorCancel!;
           }
-          errorType = ErrorType.cancel;
           break;
         case DioExceptionType.connectionTimeout:
         case DioExceptionType.sendTimeout:
@@ -317,19 +302,19 @@ class Session {
           if (config.errorTimeout != null) {
             message = config.errorTimeout!;
           }
-          errorType = ErrorType.timeout;
           break;
         case DioExceptionType.unknown:
           break;
       }
       result = Result(
-          response: error.response,
-          body: (error.response?.data is Map) ? error.response?.data : {},
-          code: '',
-          data: {},
-          list: [],
-          message: message,
-          error: errorType);
+        response: error.response,
+        body: (error.response?.data is Map) ? error.response?.data : {},
+        code: '',
+        data: {},
+        list: [],
+        message: message,
+        error: error.type,
+      );
     } catch (e) {
       _printCatchLog(e);
     }
@@ -425,11 +410,11 @@ class Session {
 
 void _printCatchLog(e) {
   if (Config.catchLogEnable) {
-    print("⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️");
+    print("💣💣💣💣💣💣");
     print(e);
     if (e is Error) {
       print(e.stackTrace);
     }
-    print("⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️");
+    print("💣💣💣💣💣");
   }
 }
