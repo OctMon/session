@@ -1,3 +1,7 @@
+## 1.2.0
+
+* Add SessionExceptionType
+
 ## 1.1.8
 
 * Add catchLogEnable
