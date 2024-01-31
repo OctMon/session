@@ -42,6 +42,8 @@ class Config {
   ///     // not the host platform.
   ///     return "PROXY localhost:8888";
   ///   };
+  ///   return client;
+  /// },
   CreateHttpClient? createHttpClient;
 
   /// Sets a callback that will decide whether to accept a secure connection
@@ -87,8 +89,8 @@ class Config {
       {this.baseUrl = '',
       this.createHttpClient,
       this.badCertificateCallback,
-      this.connectTimeout = const Duration(seconds: 10),
-      this.receiveTimeout = const Duration(seconds: 10),
+      this.connectTimeout = const Duration(seconds: 30),
+      this.receiveTimeout = const Duration(seconds: 30),
       this.code = 'code',
       this.data = 'data',
       this.list = 'data/list',
@@ -98,7 +100,7 @@ class Config {
       this.errorConnection = '网络连接出错，请检查网络连接',
       this.errorBadResponse = '服务器错误，请稍后重试',
       this.errorCancel = '请求被取消了',
-      this.errorUnknown = '未知错误'});
+      this.errorUnknown = '网络连接不稳定，请检查网络连接'});
 }
 
 /// A Result.
