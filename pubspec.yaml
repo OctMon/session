@@ -8,3 +8,4 @@ environment:
 
 dependencies:
   dio: ^5.4.0 # https://github.com/cfug/dio
+  native_dio_adapter:

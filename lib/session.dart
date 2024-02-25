@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:dio/src/adapters/io_adapter.dart';
+import 'package:native_dio_adapter/native_dio_adapter.dart';
 
 typedef SessionExceptionType = DioExceptionType;
 
@@ -250,10 +251,11 @@ class Session {
       if (kIsWeb) {
         // _dio.httpClientAdapter = BrowserHttpClientAdapter();
       } else {
-        _dio.httpClientAdapter = IOHttpClientAdapter(
-          createHttpClient: config.createHttpClient,
-          validateCertificate: config.badCertificateCallback,
-        );
+        // _dio.httpClientAdapter = IOHttpClientAdapter(
+        //   createHttpClient: config.createHttpClient,
+        //   validateCertificate: config.badCertificateCallback,
+        // );
+        _dio.httpClientAdapter = NativeAdapter();
       }
     } catch (e) {
       _printCatchLog(e);
@@ -415,7 +417,7 @@ void _printCatchLog(e) {
     print("💣💣💣💣💣💣");
     print(e);
     if (e is Error) {
-      print(e.stackTrace);
+      print(e);
     }
     print("💣💣💣💣💣");
   }
