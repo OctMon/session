@@ -1,3 +1,7 @@
+## 1.2.2
+
+* Upgrade Dio version 5.4.3+1
+
 ## 1.2.1
 
 * default error unknown tip
