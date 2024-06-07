@@ -105,6 +105,7 @@ class Config {
 
 /// A Result.
 class Result {
+  final RequestOptions? requestOptions;
   final Response? response;
   final Map body;
   final String code;
@@ -117,7 +118,8 @@ class Result {
   List _models = [];
 
   Result(
-      {this.response,
+      {this.requestOptions,
+      this.response,
       this.body = const {},
       this.code = '',
       this.message = '',
@@ -128,6 +130,7 @@ class Result {
 
   merge(Result other) {
     Result result = Result(
+      requestOptions: other.requestOptions ?? requestOptions,
       response: other.response ?? response,
       body: other.body.isNotEmpty ? other.body : body,
       code: other.code.isNotEmpty ? other.code : code,
@@ -261,6 +264,7 @@ class Session {
 
     Response? response;
     Result result = Result(
+        requestOptions: null,
         response: response,
         body: {},
         data: {},
@@ -308,7 +312,9 @@ class Session {
         case DioExceptionType.unknown:
           break;
       }
+
       result = Result(
+        requestOptions: error.requestOptions,
         response: error.response,
         body: (error.response?.data is Map) ? error.response?.data : {},
         code: '',
@@ -357,6 +363,7 @@ class Session {
           _printCatchLog(e);
         }
         result = Result(
+            requestOptions: response?.requestOptions,
             response: response,
             body: body,
             code: code,
