@@ -1,3 +1,7 @@
+## 1.3.2
+
+* Result DioExceptionType 
+
 ## 1.3.1
 
 * error unknown message

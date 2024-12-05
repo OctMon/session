@@ -113,7 +113,7 @@ class Result {
   final Map data;
   final List list;
   final bool valid;
-  final DioExceptionType? error;
+  final DioException? error;
   dynamic _model;
   List _models = [];
 
@@ -321,7 +321,7 @@ class Session {
         data: {},
         list: [],
         message: message,
-        error: error.type,
+        error: error,
       );
     } catch (e) {
       _printCatchLog(e);
