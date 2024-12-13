@@ -1,5 +1,6 @@
 [![Pub](https://img.shields.io/pub/v/session.svg)](https://pub.dartlang.org/packages/session)
 [![support](https://img.shields.io/badge/platform-flutter%7Cdart%20vm-ff69b4.svg)](https://github.com/OctMon/session)
+[![build](https://github.com/OctMon/session/workflows/build/badge.svg)](https://github.com/OctMon/session/actions)
 
 # session
 
@@ -14,7 +15,7 @@ https://javiercbk.github.io/json_to_dart/
 
 ```yaml
 dependencies:
-  session: ^1.1.4  #latest version
+  session: #latest version
 ```
 
 ### Example

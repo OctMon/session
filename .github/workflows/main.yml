@@ -1,0 +1,32 @@
+name: build
+
+on:
+  push:
+    branches: [ main, f-ci-action ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '17.x'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - run: dart --version
+      - run: flutter --version
+      - name: build flutter_easy_example
+        working-directory: example
+        run: |
+          flutter build apk --target-platform android-arm64
+          flutter build ios --release --no-codesign
