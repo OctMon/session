@@ -330,7 +330,7 @@ class Session {
       dynamic body = {};
       if (response?.data is Map) {
         body = response?.data ?? {};
-      } else if (response?.data is String) {
+      } else if (response?.data is String && response?.data != "") {
         try {
           body = json.decode(response?.data);
         } catch (e) {
