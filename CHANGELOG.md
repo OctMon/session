@@ -1,3 +1,7 @@
+## 1.3.3
+
+* fix: response data is "" exception
+
 ## 1.3.2
 
 * Result DioExceptionType 
