@@ -25,7 +25,7 @@ jobs:
           channel: 'stable'
       - run: dart --version
       - run: flutter --version
-      - name: build flutter_easy_example
+      - name: build session
         working-directory: example
         run: |
           flutter build apk --target-platform android-arm64
