@@ -1,3 +1,7 @@
+## 1.3.4
+
+* add duplicate interceptor
+
 ## 1.3.3
 
 * fix: response data is "" exception
