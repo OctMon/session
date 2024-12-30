@@ -29,6 +29,9 @@ class Config {
   /// it can contain sub path, like: "https://www.google.com/api/".
   final String baseUrl;
 
+  /// duplicate repeat request interceptor
+  final bool globalDuplicateInterceptor;
+
   /// createHttpClient: () {
   ///   // Don't trust any certificate just because their root cert is trusted.
   ///   final client =
@@ -87,6 +90,7 @@ class Config {
 
   Config(
       {this.baseUrl = '',
+      this.globalDuplicateInterceptor = false,
       this.createHttpClient,
       this.badCertificateCallback,
       this.connectTimeout = const Duration(seconds: 30),
@@ -218,6 +222,7 @@ class Session {
     CancelToken? cancelToken,
     Options? options,
     Duration? connectTimeout,
+    bool duplicateInterceptor = false,
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
@@ -240,6 +245,9 @@ class Session {
           },
         ),
       );
+    if (config.globalDuplicateInterceptor || duplicateInterceptor) {
+      _dio.interceptors.add(DioInterceptor());
+    }
     if (Config.logEnable) {
       _dio.interceptors.add(
         LogInterceptor(
@@ -386,18 +394,24 @@ class Session {
     String path, {
     Map? data,
     Map<String, dynamic>? queryParameters,
+    bool duplicateInterceptor = false,
   }) async {
     return request(path,
         data: data,
         queryParameters: queryParameters,
+        duplicateInterceptor: duplicateInterceptor,
         options: Options(method: 'get'));
   }
 
   Future<Result> post(
     String path, {
     Map? data,
+    bool duplicateInterceptor = false,
   }) async {
-    return request(path, data: data, options: Options(method: 'post'));
+    return request(path,
+        data: data,
+        duplicateInterceptor: duplicateInterceptor,
+        options: Options(method: 'post'));
   }
 
   dynamic _getMap(dynamic map, String key) {
@@ -425,5 +439,38 @@ void _printCatchLog(e) {
       print(e.stackTrace);
     }
     print("💣💣💣💣💣");
+  }
+}
+
+final Map<String, CancelToken> _activeRequests = {};
+
+class DioInterceptor extends Interceptor {
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    final key = options.uri.toString();
+    if (_activeRequests.containsKey(key)) {
+      DioException.requestCancelled(
+          requestOptions: options, reason: "duplicate requests");
+      if (Config.catchLogEnable) {
+        print("duplicate requests: $key");
+      }
+      return;
+    }
+    final cancelToken = CancelToken();
+    _activeRequests[key] = cancelToken;
+    options.cancelToken = cancelToken;
+    super.onRequest(options, handler);
+  }
+
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    _activeRequests.remove(response.requestOptions.uri.toString());
+    super.onResponse(response, handler);
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    _activeRequests.remove(err.requestOptions.uri.toString());
+    super.onError(err, handler);
   }
 }
