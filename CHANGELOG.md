@@ -1,3 +1,7 @@
+## 1.4.0
+* upgrade dio 5.8.0+1
+* form data interceptors
+
 ## 1.3.4
 
 * add duplicate interceptor
