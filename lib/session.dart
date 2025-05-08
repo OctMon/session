@@ -356,12 +356,14 @@ class Session {
           _printCatchLog(e);
         }
         try {
-          data = _getMap(body, config.data) ?? {};
+          final _data = _getMap(body, config.data);
+          data = _data is Map ? _data : {};
         } catch (e) {
           _printCatchLog(e);
         }
         try {
-          list = _getMap(body, config.list) ?? [];
+          final _list = _getMap(body, config.list);
+          list = _list is List ? _list : [];
         } catch (e) {
           _printCatchLog(e);
         }
@@ -422,7 +424,9 @@ class Session {
       return _getMap(_map, keys.join('/'));
     }
     if (map is Map) {
-      return map[keys.first];
+      if (map.containsKey(keys.first)) {
+        return map[keys.first];
+      }
     }
     if (map is List) {
       return map;
