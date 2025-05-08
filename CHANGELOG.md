@@ -1,3 +1,6 @@
+## 1.5.0
+* type safety treatment
+
 ## 1.4.0
 * upgrade dio 5.8.0+1
 * form data interceptors
