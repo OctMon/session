@@ -446,35 +446,43 @@ void _printCatchLog(e) {
   }
 }
 
-final Map<String, CancelToken> _activeRequests = {};
+final Map<String, RequestOptions> _activeRequests = {};
 
 class DioInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     final key = options.uri.toString();
     if (_activeRequests.containsKey(key)) {
-      DioException.requestCancelled(
-          requestOptions: options, reason: "duplicate requests");
       if (Config.catchLogEnable) {
         print("duplicate requests: $key");
       }
+      // Complete the interceptor chain so callers can finish awaiting the request.
+      handler.reject(DioException.requestCancelled(
+          requestOptions: options, reason: "duplicate requests"));
       return;
     }
-    final cancelToken = CancelToken();
-    _activeRequests[key] = cancelToken;
-    options.cancelToken = cancelToken;
+    // Keep the caller's CancelToken intact.
+    _activeRequests[key] = options;
     super.onRequest(options, handler);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    _activeRequests.remove(response.requestOptions.uri.toString());
+    _release(response.requestOptions);
     super.onResponse(response, handler);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    _activeRequests.remove(err.requestOptions.uri.toString());
+    _release(err.requestOptions);
     super.onError(err, handler);
+  }
+
+  void _release(RequestOptions options) {
+    final key = options.uri.toString();
+    // A rejected duplicate must not release the request that is still running.
+    if (identical(_activeRequests[key], options)) {
+      _activeRequests.remove(key);
+    }
   }
 }

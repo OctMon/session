@@ -2,6 +2,15 @@
 
 A new Flutter project.
 
+## Android builds
+
+Install JDK 21 before running `flutter run`. The Gradle daemon is configured in
+`android/gradle/gradle-daemon-jvm.properties` to use JDK 21, independently of the
+JDK bundled with Android Studio. Gradle detects standard local JDK installations.
+
+The Android build uses Gradle 8.14.4, Android Gradle Plugin 8.11.1, and Kotlin
+2.2.20 for compatibility with Flutter 3.44.
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
