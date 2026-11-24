@@ -1,3 +1,6 @@
+## 1.5.1
+* fix duplicate requests reject
+
 ## 1.5.0
 * type safety treatment
 
